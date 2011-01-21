@@ -1,10 +1,11 @@
-// http://www.seas.gwu.edu/~csci131/spring97/lect10.html
-
 #pragma once
 
 #include <list>
 #include <stack>
 #include <queue>
+
+#pragma mark -
+#pragma mark GEdge
 
   /*
   * @class GEdge
@@ -23,6 +24,9 @@
       GNode<N, E> *node;
       E weight;
   };
+
+#pragma mark -
+#pragma mark GNode
 
   /*
   * @class GNode
@@ -44,7 +48,7 @@
       N data;
       std::list<Edge> edgelist;
       bool visited;
-      
+
       /*
       * @methods
       *   GNode(N data, bool visited) - contstructor
@@ -57,7 +61,7 @@
       * @methods
       *   setEdge(Node *node, E weight) - add edge to edgelist 
       */
-      void setEdge( Node* node, E weight )
+      void addEdge( Node* node, E weight )
       {
         Edge e;
         e.node = node;
@@ -71,8 +75,7 @@
       */
       Edge* getEdge( Node* node )
       {
-        
-        std::list<Edge>::iterator iter;
+        typename std::list<Edge>::iterator iter;
         for ( iter = edgelist.begin(); iter != edgelist.end(); iter++ ) {
           if ( iter->node == node )
             return &iter;
@@ -86,13 +89,16 @@
       */
       void removeEdge( Node* node )
       {
-        std::list<Edge>::iterator iter = edgelist.begin();
+        typename std::list<Edge>::iterator iter;
         for ( iter = edgelist.begin(); iter != edgelist.end(); iter++ ) {
           if ( iter->node == node )
             edgelist.remove(iter);
         }
       }
   };
+
+#pragma mark -
+#pragma mark Graph
 
   /*
   * @class Graph
@@ -162,8 +168,10 @@
         {
           Edge *edge;
 
-          for( int i = 0; i < nodes.size(); i++ ) {
-            if( nodes[i] != NULL ) {
+          for( int i = 0; i < nodes.size(); i++ )
+          {
+            if( nodes[i] != NULL )
+            {
               edge = nodes[i]->getEdge(nodes[i]);
               if ( edge != NULL )
                 removeEdge(i, index);
@@ -190,7 +198,8 @@
         if( nodes[fromIndex]->getEdge(nodes[toIndex]) != NULL )
           flag = false;
 
-        if (flag) nodes[fromIndex]->addEdge(nodes[toIndex], weight);
+        if (flag)
+          nodes[fromIndex]->addEdge(nodes[toIndex], weight);
 
         return flag;
       }
@@ -228,61 +237,65 @@
         }
       }
 
-      void DepthFirstSearch( Node* node, void (*process)(Node*) )
+#pragma mark -
+#pragma mark Algorithms
+
+      /*
+      * @methods
+      *   DepthFirstSearch() - uses depth first search to traverse the nodes
+      */
+      void DepthFirstSearch( Node* node )
       {
-        std::stack<Node*> s;
-        s.push(node);
+        if ( node == NULL )
+          return;
+
+        node.visited = true;
+        std::cout << node.data;
+
+        typename std::list<Edge>::iterator iter = node->edgelist.begin();
+
+        for( ; iter != node->edgelist.end(); iter++ ) {
+          if( iter->node.visited == false )
+            DepthFirstSearch( iter->node );
+        }
+
+        //clearVisits();
+      }
+
+      /*
+      * @methods
+      *   BreadthFirstSearch() - uses breadth first search to traverse the nodes
+      */
+      void BreadthFirstSearch( Node* node )
+      {
+        if ( node == NULL )
+          return;
+
+        std::queue<Node*> queue;
+
+        typename std::list<Edge>::iterator iter = node->edgelist.begin();
+        typename std::list<Edge>::iterator iterEnd;
+
+        queue.push(node);
+        node->visited = true;
+
+        while(!queue.empty())
+        {
+          std::cout << queue.top().data;
+
+          iter = queue.top()->edgelist.begin();
+          iterEnd = queue.top()->edgelist.end();
+
+          for( ; iter != iterEnd; iter++ )
+          {
+            if( iter->node.visited == false ) {
+              iter->node.visited = true;
+              queue.push( iter->node );
+            }
+          }
+
+          queue.pop();
+        }
       }
 
   };
-
-/*
-public void dfs()
-{
-	//DFS uses Stack data structure
-	Stack s=new Stack();
-	s.push(this.rootNode);
-	rootNode.visited=true;
-	printNode(rootNode);
-	while(!s.isEmpty())
-	{
-		Node n=(Node)s.peek();
-		Node child=getUnvisitedChildNode(n);
-		if(child!=null)
-		{
-			child.visited=true;
-			printNode(child);
-			s.push(child);
-		}
-		else
-		{
-			s.pop();
-		}
-	}
-	
-	//Clear visited property of nodes
-	clearNodes();
-}
-
-public void bfs()
-{
-	//BFS uses Queue data structure
-	Queue q=new LinkedList();
-	q.add(this.rootNode);
-	printNode(this.rootNode);
-	rootNode.visited=true;
-	while(!q.isEmpty())
-	{
-		Node n=(Node)q.remove();
-		Node child=null;
-		while((child=getUnvisitedChildNode(n))!=null)
-		{
-			child.visited=true;
-			printNode(child);
-			q.add(child);
-		}
-	}
-	//Clear visited property of nodes
-	clearNodes();
-}
-*/
