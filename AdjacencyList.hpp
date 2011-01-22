@@ -1,11 +1,13 @@
 #pragma once
 
-#include <list>
+#include <vector>
 #include <stack>
 #include <queue>
 
 #pragma mark -
 #pragma mark GEdge
+
+  typedef unsigned int u_int;
 
   /*
   * @class GEdge
@@ -46,7 +48,7 @@
       typedef GNode<N, E> Node;
 
       N data;
-      std::list<Edge> edgelist;
+      std::vector<Edge> edgelist;
       bool visited;
 
       /*
@@ -75,7 +77,7 @@
       */
       Edge* getEdge( Node* node )
       {
-        typename std::list<Edge>::iterator iter;
+        typename std::vector<Edge>::iterator iter;
         for ( iter = edgelist.begin(); iter != edgelist.end(); iter++ ) {
           if ( iter->node == node )
             return &iter;
@@ -89,7 +91,7 @@
       */
       void removeEdge( Node* node )
       {
-        typename std::list<Edge>::iterator iter;
+        typename std::vector<Edge>::iterator iter;
         for ( iter = edgelist.begin(); iter != edgelist.end(); iter++ ) {
           if ( iter->node == node )
             edgelist.remove(iter);
@@ -105,7 +107,7 @@
   *  Programmer - Mark Sands
   *  date - January 20, 2011
   */
-  template <class N, class E>
+  template <class N, class E = int>
   class Graph
   {
     public:
@@ -118,16 +120,17 @@
       typedef GNode<N, E> Node;
       typedef GEdge<N, E> Edge;
 
-      std::list<Node*> nodes;
+      std::vector<Node*> nodes;
       unsigned int count;
 
       /*
       * @methods
       *   Graph(int size) - constructor sets nodes to 0
       */
-      Graph( int size ) : nodes(size) , count(0)
+      Graph( u_int size ) : nodes(size) , count(0)
       {
-        for( int i = 0; i < size; i++ )
+        nodes.reserve(size);
+        for( u_int i = 0; i < size; i++ )
           nodes[i] = 0;
       }
 
@@ -137,7 +140,7 @@
       */
       virtual ~Graph()
       {
-        for( int i = 0; i < nodes.size; i++ ) {
+        for( u_int i = 0; i < nodes.size(); i++ ) {
           if( nodes[i] != NULL )
             delete nodes[i];
         }
@@ -168,7 +171,7 @@
         {
           Edge *edge;
 
-          for( int i = 0; i < nodes.size(); i++ )
+          for( u_int i = 0; i < nodes.size(); i++ )
           {
             if( nodes[i] != NULL )
             {
@@ -214,7 +217,7 @@
           nodes[fromIndex]->removeEdge(nodes[toIndex]);
       }
 
-      /*
+       /*
       * @methods
       *   getEdge(int fromIndex, int toIndex) - return an edge from the graph
       */
@@ -231,7 +234,7 @@
       */
       void clearVisits()
       {
-        for ( int i = 0; i < nodes.size(); i++ ) {
+        for ( u_int i = 0; i < nodes.size(); i++ ) {
           if( nodes[i] != NULL )
             nodes[i]->visited = false;
         }
@@ -252,7 +255,7 @@
         node.visited = true;
         std::cout << node.data;
 
-        typename std::list<Edge>::iterator iter = node->edgelist.begin();
+        typename std::vector<Edge>::iterator iter = node->edgelist.begin();
 
         for( ; iter != node->edgelist.end(); iter++ ) {
           if( iter->node.visited == false )
@@ -273,8 +276,8 @@
 
         std::queue<Node*> queue;
 
-        typename std::list<Edge>::iterator iter = node->edgelist.begin();
-        typename std::list<Edge>::iterator iterEnd;
+        typename std::vector<Edge>::iterator iter = node->edgelist.begin();
+        typename std::vector<Edge>::iterator iterEnd;
 
         queue.push(node);
         node->visited = true;
