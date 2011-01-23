@@ -1,8 +1,15 @@
 #pragma once
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
 
 #include <vector>
 #include <stack>
 #include <queue>
+#include <string>
+
+bool isKindOfClass(void* X, void* Y) {
+  return (typeid(X).name() == typeid(Y).name());
+}
 
 #pragma mark -
 #pragma mark GEdge
@@ -127,11 +134,11 @@
       * @methods
       *   Graph(int size) - constructor sets nodes to 0
       */
-      Graph( u_int size ) : nodes(size) , count(0)
+      explicit Graph( u_int size ) : count(0)
       {
-        nodes.reserve(size);
-        for( u_int i = 0; i < size; i++ )
-          nodes[i] = 0;
+        nodes.resize(size*size);
+        for( u_int i = 0; i < nodes.size(); i++ )
+          nodes[i] = NULL;
       }
 
       /*
@@ -150,7 +157,7 @@
       * @methods
       *   addNode(N data, int index) - adds a node to the adjacencylist
       */
-      bool addNode( N data, int index )
+      bool addNode( int index, N data )
       {
         if( nodes[index] != NULL )
           return false;
@@ -302,3 +309,5 @@
       }
 
   };
+
+#endif
