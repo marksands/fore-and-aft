@@ -10,13 +10,14 @@
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
 typedef unsigned int u_int;
+typedef long int int32;
 
 /*
 * @prototypes
 */
 int InitMenu();
-void InitBoard(int size);
-void InitGoal(int size);
+void InitBoard(int32 size);
+void InitGoal(int32 size);
 
 void dfs();
 void PrintGrid( std::string grid );
@@ -28,25 +29,25 @@ const char BLUE  = 'B';
 
 class Node {
   public:
-    std::vector<int> state;
+    std::vector<int32> state;
     std::string chargrid;
-    int empty;
+    int32 empty;
     bool visited;
 
-  Node( int size ) { 
+  Node( int32 size ) { 
     state.resize(size*size);
     chargrid.resize(size*size,'0');
     visited = false;
   }
 
-  Node( std::vector<int> s, std::string c, int e, bool v )
+  Node( std::vector<int32> s, std::string c, int32 e, bool v )
     : state(s), chargrid(c), empty(e), visited(v) { }
 };
 
 std::vector<Node> nodes;
-std::vector<int> goalstate;
+std::vector<int32> goalstate;
 std::string goalstring;
-int size;
+int32 size;
 
 int main(int argc, char* argv[])
 {
@@ -89,7 +90,7 @@ int InitMenu()
 * @methods
 *   InitMenu() - query user for board size and return the size or 5
 */
-void InitBoard(int size)
+void InitBoard(int32 size)
 {
   Node newNode(size);
 
@@ -117,14 +118,14 @@ void InitBoard(int size)
 * @methods
 *   InitMenu() - query user for board size and return the size or 5
 */
-void InitGoal(int size)
+void InitGoal(int32 size)
 {
   goalstate.resize(size*size);
   goalstring.resize(size*size, '0');
 
-  for (int i = 0; i < size; i++) {
-    for (int j = 0; j < size; j++) {
-      int index = i*size + j;
+  for (int32 i = 0; i < size; i++) {
+    for (int32 j = 0; j < size; j++) {
+      int32 index = i*size + j;
       if ((i == (size-1)/2) && (j == (size-1)/2) ) {
         goalstate[index] = START;
       } else if ((i <= (size-1)/2) && (j <= (size-1)/2) ) {
@@ -158,7 +159,7 @@ void dfs()
       // for each state push node/state onto stack
 
       // multiplication is expensive
-      int size2 = size*size;
+      int32 size2 = size*size;
   
       std::cout << "trying 1 and 2" << std::endl;    
       if ((n.empty - 1 >= 0) && (n.state[n.empty-1] == RED)) {
