@@ -6,6 +6,7 @@
 #include <queue>
 
 #include "Hash.hpp"
+#include "Timer.hpp"
 
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
@@ -65,6 +66,7 @@ int main(int argc, char* argv[])
     << std::endl
     << std::endl;
 
+  Timer t;
   dfs();
 
   #if defined(__WIN32__) || defined(_WIN32)
