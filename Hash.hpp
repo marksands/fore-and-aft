@@ -325,6 +325,7 @@
   void Hash<T>::insertEntry(T value)
   {
     if ( Insert( value ) );
+    else std::cerr << "Failed to insert!" << std::endl;
   }
 
     // deletes entry 'value'
@@ -332,6 +333,7 @@
   void Hash<T>::deleteEntry(T value)
   {
     if ( Remove( value ) );
+    else std::cerr << "Failed to insert!" << std::endl;
   }
 
     // boolean is there?

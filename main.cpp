@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <iomanip>
 #include <string>
 #include <vector>
@@ -15,9 +16,6 @@ typedef long int int16;
 typedef unsigned long int u_int32;
 typedef long int int32;
 
-/*
-* @prototypes
-*/
 int InitMenu();
 void InitBoard(int32 size);
 void InitGoal(int32 size);
@@ -59,13 +57,6 @@ int main(int argc, char* argv[])
   InitBoard(size);
   InitGoal(size);
 
-  std::cout << std::endl
-    << "init: " << nodes[0].chargrid
-    << std::endl
-    << "goal: " << goalstring
-    << std::endl
-    << std::endl;
-
   Timer t;
   dfs();
 
@@ -89,8 +80,11 @@ int InitMenu()
      << std::endl
      << std::setw(3) << "" << "Enter size: ";
   std::cin >> choice;
-  std::cout << std::endl;
-
+  if (choice < 5)
+     std::cout << std::endl
+      << "The grid size must be at least 5!"
+      << std::endl;
+  std::cout << std::endl;  
   return ( choice < 5 ? 5 : choice );
 }
 
