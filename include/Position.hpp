@@ -4,14 +4,10 @@
 
 #include <iostream>
 
+#include "Global.hpp"
 #include "Boardsize.hpp"
 
 using std::ostream;
-
-const char EMPTY = '0';
-const char START = 'S';
-const char RED   = 'R';
-const char BLUE  = 'B';
 
 class Position {
   public:

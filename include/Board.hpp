@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <string>
 #include <vector>
 
 #include "Global.hpp"
@@ -28,6 +29,8 @@ class Board {
 
     friend ostream& operator<<(ostream& os, const Board& b);
 
+    std::string chargrid;
+
   private:
     char tokenForPosition(const Position& pos);
 
@@ -40,18 +43,20 @@ class Board {
 
 Board::Board(const int size)
 {
+  chargrid = "";
   for (int i = 0; i < size; ++i)
   {
     std::vector<char> b;
     for ( int j = 0; j < size; j++ )
     {
-      if      ((i <= size/2) && (j <= size/2)) b.push_back(RED);
-      else if ((i >= size/2) && (j >= size/2)) b.push_back(BLUE);
-      else                                     b.push_back(EMPTY);
+      if      ((i <= size/2) && (j <= size/2)) { b.push_back(RED);   chargrid += RED; }
+      else if ((i >= size/2) && (j >= size/2)) { b.push_back(BLUE);  chargrid += BLUE; }
+      else                                     { b.push_back(EMPTY); chargrid += EMPTY; }
     }
     board.push_back(b);
   }
   board[size/2][size/2] = START;
+  chargrid[(size*size)/2] = START;
   emptySlotIndex.setPosition(size/2, size/2);
 }
 
@@ -60,7 +65,7 @@ void Board::possibleStates(std::vector<Move>& moves) const
   moves.clear();
 
   Position currentPosition(emptySlotIndex);
-
+  /*
   for ( int i = 0 ; i < NUMBER_OF_MOVES/2; i++ ) {
     if ( currentPosition.canMoveTo(MOVES[i]) && tokenForPosition(currentPosition) == RED )
       moves.push_back(Move(emptySlotIndex, MOVES[i]));
@@ -97,22 +102,20 @@ void Board::possibleStates(std::vector<Move>& moves) const
       }
     }
   }
+  */
 }
 
-char tokenForPosition(const Position& pos)
+char Board::tokenForPosition(const Position& pos)
 {
-  return board[pos.row][pow.col];
+  return board[pos.row][pos.col];
 }
 
 void Board::move(const Move& move)
 {
   Position t(move.from_);
 
-  flip(t);
   t += move.to_;
-  flip(t);
   t += move.to_;
-  flip(t);
 }
 
   // recursive!!

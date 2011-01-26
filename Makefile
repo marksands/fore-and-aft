@@ -2,17 +2,20 @@ CXX = g++
 
 # SOURCES
 PRODUCTION_CODE = main.cpp
-TEST_CODE_HELPER = TestHelper.cpp
-TEST_CODE_MAIN = TestMain.cpp
-TEST_CODE_RUNNER = TestRunner.cpp
+TEST_CODE_HELPER = tests/TestHelper.cpp
+TEST_CODE_MAIN = tests/TestMain.cpp
+TEST_CODE_RUNNER = tests/TestRunner.cpp
 
 P_OBJECTS = $(PRODUCTION_CODE:.cpp=.o)
 T_OBJECTS_HELPER = $(TEST_CODE_HELPER:.cpp=.o)
 T_OBJECTS_MAIN = $(TEST_CODE_MAIN:.cpp=.o)
 T_OBJECTS_RUNNER = $(TEST_CODE_RUNNER:.cpp=.o)
 
+# home
+PROJECT_ROOT=.
+
 # gcc flags + frameworks
-CFLAGS = -c -Wall
+CFLAGS = -c -Wall -I$(PROJECT_ROOT)/include
 GLUTFLAGS = -framework GLUT -framework OpenGL
 COCOAFLAGS = -framework Cocoa
 
@@ -21,7 +24,7 @@ EXECUTABLE = graph
 TEST_EXECUTABLE = test
 
 # Include CppUnit
-CPPFLAGS = -I$$CPPUTEST_HOME/include
+CPPFLAGS = -c -Wall -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
 LIB = $(CPPUTEST_HOME)lib/libCppUTest.a
 
 all: $(EXECUTABLE) $(TEST_EXECUTABLE)
@@ -48,20 +51,20 @@ $(P_OBJECTS).o:
 $(T_OBJECTS_HELPER).o:
 	@echo "============="
 	@echo "Compiling $<"
-	$(CXX) $(CFLAGS) $(CPPFLAGS) $< -o $@
+	$(CXX) $(CPPFLAGS) $< -o $@
 
 $(T_OBJECTS_MAIN).o:
 	@echo "============="
 	@echo "Compiling $<"
-	$(CXX) $(CFLAGS) $(CPPFLAGS) $< -o $@
+	$(CXX) $(CPPFLAGS) $< -o $@
 
 $(T_OBJECTS_RUNNER).o:
 	@echo "============="
 	@echo "Compiling $<"
-	$(CXX) $(CFLAGS) $(CPPFLAGS) $< -o $@
+	$(CXX) $(CPPFLAGS) $< -o $@
 
 clean:
-	rm -rf *.o $(EXECUTABLE) $(TEST_EXECUTABLE)
+	rm -rf *.o tests/*.o $(EXECUTABLE) $(TEST_EXECUTABLE)
 
 run:
 	./$(TEST_EXECUTABLE)
