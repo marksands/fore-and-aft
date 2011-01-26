@@ -22,7 +22,7 @@ class Board {
   public:
     Board(const int size = 5);
 
-    void possibleMoves(std::vector<Move>& moves) const;
+    void possibleStates(std::vector<Move>& moves) const;
     void play(const Move& currentMove, GameTree& parent) const;
     void move(const Move& move);
 
@@ -61,8 +61,7 @@ Board::Board(const int size)
   board[size/2][size/2] = START;
 }
 
-void Board::possibleMoves(std::vector<Move>& moves) const
-//void Board::possibleStates(std::vector<Move>& moves) const
+void Board::possibleStates(std::vector<Move>& moves) const
 {
   moves.clear();
 
@@ -115,7 +114,7 @@ void Board::play(const Move& currentMove, GameTree& parent) const
 
     // populate "states" (moves) with the possible moves avaialbe for this state
   std::vector<Move> moves;
-  nextBoard.possibleMoves(moves);
+  nextBoard.possibleStates(moves);
 
     // for each new possible state, play the move with the current board! (is this BFS?)
   for (u_int32 i = 0; i < moves.size(); ++i) {

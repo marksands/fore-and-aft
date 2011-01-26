@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     Board board(size);
 
     vector<Move> moves;
-    board.possibleMoves(moves);
+    board.possibleStates(moves);
 
     GameTree root(board);
     for (u_int32 i = 0; i < moves.size(); ++i) {
