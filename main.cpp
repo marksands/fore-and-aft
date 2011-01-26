@@ -1,313 +1,59 @@
+// objects are:
+// PegBoard (the board itself with pins indicating position occupied)
+// Position (a pair of row/col position on the board, or a relative position)
+// Move (a pair of Positions, one absolute position, and other a direction
+//       to move toward)
+// GameTree (a tree starting from initial PegBoard that will contain all the
+//           winning successive board positions as children, representing
+//           the next logical board position from give one)
+//
+//
+
 #include <iostream>
-#include <cstdlib>
 #include <iomanip>
-#include <string>
+#include <cstdlib>
 #include <vector>
-#include <stack>
-#include <queue>
+#include <list>
+#include <memory>
 
-#include "Hash.hpp"
-#include "Timer.hpp"
+#include "ForeAft.hpp"
 
-#pragma GCC diagnostic ignored "-Wwrite-strings"
+using namespace std;
 
-typedef unsigned int u_int16;
-typedef long int int16;
-typedef unsigned long int u_int32;
-typedef long int int32;
+// something like this?
+bool JumpsForToken(char token) {
+  //if ( Position(+0,-1).token != token ) return true;
+  //if ( Position(+0,+1).token != token ) return true;
+  //if ( Position(+1,+0).token != token ) return true;
+  //if ( Position(-1,+0).token != token ) return true;
+  return true;
+}
 
-int InitMenu();
-void InitBoard(int32 size);
-void InitGoal(int32 size);
-
-void dfs();
-void PrintGrid( std::string grid );
-
-const char EMPTY = '0';
-const char START = 'S';
-const char RED   = 'R';
-const char BLUE  = 'B';
-
-class Node {
-  public:
-    std::vector<int32> state;
-    std::string chargrid;
-    int32 empty;
-    bool visited;
-
-  Node( int32 size ) { 
-    state.resize(size*size);
-    chargrid.resize(size*size,'0');
-    visited = false;
-  }
-
-  Node( std::vector<int32> s, std::string c, int32 e, bool v )
-    : state(s), chargrid(c), empty(e), visited(v) { }
-};
-
-std::vector<Node> nodes;
-std::vector<int32> goalstate;
-std::string goalstring;
-int32 size;
+// I'm 12 and what is this
+//static const int NUMMOVEMENTS = sizeof(MOVES)/sizeof(Position);
+static const int NUMMOVEMENTS = 8;
 
 int main(int argc, char* argv[])
 {
-  size = InitMenu();
+  int size = 5;
+  //cin >> size;
 
-  InitBoard(size);
-  InitGoal(size);
+  do {
+    BoardSize::board_size = size;
+    Board board(size);
 
-  Timer t;
-  dfs();
+    vector<Move> moves;
+    board.possibleMoves(moves);
 
-  #if defined(__WIN32__) || defined(_WIN32)
-    system("pause");
-  #endif
+    GameTree root(board);
+    for (u_int32 i = 0; i < moves.size(); ++i) {
+      board.play(moves[i], root);
+    }
+
+    //while (!root.walk());
+
+    cin >> size;
+  } while ( size != 0 );
 
   return 0;
-}
-
-/*
-* @methods
-*   InitMenu() - query user for board size and return the size or 5
-*/
-int InitMenu()
-{
-  int choice;
-
-  std::cout << std::endl
-     << std::setw(3) << "" << "Initialize the board size"
-     << std::endl
-     << std::setw(3) << "" << "Enter size: ";
-  std::cin >> choice;
-  if (choice < 5)
-     std::cout << std::endl
-      << "The grid size must be at least 5!"
-      << std::endl;
-  std::cout << std::endl;  
-  return ( choice < 5 ? 5 : choice );
-}
-
-/*
-* @methods
-*   InitMenu() - query user for board size and return the size or 5
-*/
-void InitBoard(int32 size)
-{
-  Node newNode(size);
-
-  for (int i = 0; i < size; i++) {
-    for (int j = 0; j < size; j++) {
-      int index = i*size + j;
-      if ((i == (size-1)/2) && (j == (size-1)/2) ) {
-        newNode.state[index] = START;
-        newNode.empty = index;
-      } else if ((i <= (size-1)/2) && (j <= (size-1)/2) ) {
-        newNode.state[index] = RED;
-      } else if ((i >= (size-1)/2) && (j >= (size-1)/2) ) {
-        newNode.state[index] = BLUE;
-      }
-      else {
-        newNode.state[index] = EMPTY;
-      }
-      newNode.chargrid[index] = newNode.state[index];
-    }
-  }
-  nodes.push_back(newNode);
-}
-
-/*
-* @methods
-*   InitMenu() - query user for board size and return the size or 5
-*/
-void InitGoal(int32 size)
-{
-  goalstate.resize(size*size);
-  goalstring.resize(size*size, '0');
-
-  for (int32 i = 0; i < size; i++) {
-    for (int32 j = 0; j < size; j++) {
-      int32 index = i*size + j;
-      if ((i == (size-1)/2) && (j == (size-1)/2) ) {
-        goalstate[index] = START;
-      } else if ((i <= (size-1)/2) && (j <= (size-1)/2) ) {
-        goalstate[index] = BLUE;
-      } else if ((i >= (size-1)/2) && (j >= (size-1)/2) ) {
-        goalstate[index] = RED;
-      }
-      else{
-        goalstate[index] = EMPTY;
-      }
-      goalstring[index] = goalstate[index];
-    }
-  }
-}
-
-void dfs()
-{
-  Hash<std::string> lookup;
-  lookup.insertEntry(goalstring);
-
-  std::stack<Node> s;
-  s.push(nodes[0]);
-  
-  while( !s.empty() )
-  {
-    Node n = s.top(); s.pop();
-
-    if (!n.visited){
-      n.visited = true;
-
-      // multiplication is expensive
-      int32 size2 = size*size;
-
-      if ((n.empty - 1 >= 0) && (n.state[n.empty-1] == RED)) {
-      // make a new state left
-        Node newState(n.state, n.chargrid, n.empty-1, false );
-        newState.state[n.empty-1] = newState.chargrid[n.empty-1] = START;
-        newState.state[n.empty] = newState.chargrid[n.empty] = RED;
-
-          // found it!
-        if( newState.chargrid == goalstring ) {
-          PrintGrid( newState.chargrid );
-          break;
-        }
-        if( !lookup.isThere(newState.chargrid) ) {
-          lookup.insertEntry(newState.chargrid);
-          PrintGrid( newState.chargrid );
-          s.push(newState);
-        }
-      }
-        else if ((n.empty - 2 >= 0) && (n.state[n.empty-2] == RED)) {
-        // make a new state left
-          Node newState(n.state, n.chargrid, n.empty-2, false );
-          newState.state[n.empty-2] = newState.chargrid[n.empty-2] = START;
-          newState.state[n.empty] = newState.chargrid[n.empty] = RED;
-            // found it!
-          if( newState.chargrid == goalstring ) {
-            PrintGrid( newState.chargrid );
-            break;
-          }
-          if( !lookup.isThere(newState.chargrid) ) {
-            lookup.insertEntry(newState.chargrid);
-            PrintGrid( newState.chargrid );
-            s.push(newState);
-          }
-        }
-
-      if ((n.empty + 1 < size2) && (n.state[n.empty+1] == BLUE)) {
-        // make a new state right
-        Node newState(n.state, n.chargrid, n.empty+1, false );
-        newState.state[n.empty+1] = newState.chargrid[n.empty+1] = START;
-        newState.state[n.empty] = newState.chargrid[n.empty] = BLUE;
-            // found it!
-        if( newState.chargrid == goalstring ) {
-          PrintGrid( newState.chargrid );
-          break;
-        }
-        if( !lookup.isThere(newState.chargrid) ) {
-          lookup.insertEntry(newState.chargrid);
-          PrintGrid( newState.chargrid );
-          s.push(newState);
-        }
-      }
-        else if ((n.empty + 2 < size2) && (n.state[n.empty+2] == BLUE)) {
-        // make a new state right
-          Node newState(n.state, n.chargrid, n.empty+2, false );
-          newState.state[n.empty+2] = newState.chargrid[n.empty+2] = START;
-          newState.state[n.empty] = newState.chargrid[n.empty] = BLUE;
-            // found it!
-          if( newState.chargrid == goalstring ) {
-            PrintGrid( newState.chargrid );
-            break;
-          }
-          if( !lookup.isThere(newState.chargrid) ) {
-            lookup.insertEntry(newState.chargrid);
-            PrintGrid( newState.chargrid );
-            s.push(newState);
-          }
-        }
-      
-      if ((n.empty - size >= 0) && (n.state[n.empty-size] == RED)) {
-        // make a new state up
-        Node newState(n.state, n.chargrid, n.empty-size, false );
-        newState.state[n.empty-size] = newState.chargrid[n.empty-size] = START;
-        newState.state[n.empty] = newState.chargrid[n.empty] = RED;
-            // found it!
-        if( newState.chargrid == goalstring ) {
-          PrintGrid( newState.chargrid );
-          break;
-        }
-        if( !lookup.isThere(newState.chargrid) ) {
-          lookup.insertEntry(newState.chargrid);
-          PrintGrid( newState.chargrid );
-          s.push(newState);
-        }
-      }
-        else if ((n.empty - size*2 >= 0) && (n.state[n.empty-size*2] == RED)) {
-        // make a new state up
-          Node newState(n.state, n.chargrid, n.empty-size*2, false );
-          newState.state[n.empty-size*2] = newState.chargrid[n.empty-size*2] = START;
-          newState.state[n.empty] = newState.chargrid[n.empty] = RED;
-            // found it!
-          if( newState.chargrid == goalstring ) {
-            PrintGrid( newState.chargrid );
-            break;
-          }
-          if( !lookup.isThere(newState.chargrid) ) {
-            lookup.insertEntry(newState.chargrid);
-            PrintGrid( newState.chargrid );
-            s.push(newState);
-          }
-        }
-
-      if ((n.empty + size < size2) && (n.state[n.empty+size] == BLUE)) {
-        // make a new state down
-        Node newState(n.state, n.chargrid, n.empty+size, false );
-        newState.state[n.empty+size] = newState.chargrid[n.empty+size] = START;
-        newState.state[n.empty] = newState.chargrid[n.empty] = BLUE;
-            // found it!
-        if( newState.chargrid == goalstring ) {
-          PrintGrid( newState.chargrid );
-          break;
-        }
-        if( !lookup.isThere(newState.chargrid) ) {
-          lookup.insertEntry(newState.chargrid);
-          PrintGrid( newState.chargrid );
-          s.push(newState);
-        }
-      }
-        else if ((n.empty + size*2 < size2) && (n.state[n.empty+size*2] == BLUE)) {
-        // make a new state down
-        Node newState(n.state, n.chargrid, n.empty+size*2, false );
-        newState.state[n.empty+size*2] = newState.chargrid[n.empty+size*2] = START;
-        newState.state[n.empty] = newState.chargrid[n.empty] = BLUE;
-            // found it!
-          if( newState.chargrid == goalstring ) {
-            PrintGrid( newState.chargrid );
-            break;
-          }
-          if( !lookup.isThere(newState.chargrid) ) {
-            lookup.insertEntry(newState.chargrid);
-            PrintGrid( newState.chargrid );
-            s.push(newState);
-          }
-        }
-    }
-  }
-}
-
-void PrintGrid( std::string grid )
-{
-  for ( int i = 0; i < size; i++ ) {
-    for ( int j = 0; j < size; j++ ) {
-      int index = i*size + j;
-      if (grid[index] == EMPTY)
-        std::cout << "[ ] ";
-      else
-        std::cout << "[" << grid[index] << "] ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl << std::endl;
 }
