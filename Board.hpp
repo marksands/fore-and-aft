@@ -29,16 +29,9 @@ class Board {
     friend ostream& operator<<(ostream& os, const Board& b);
 
   private:
-    // ????
-    void flip(const Position& token) {
-      //board[token.row][token.col] = EMPTY;
-      //board[token.row][token.col].flip();
-    }
+    char tokenForPosition(const Position& pos);
 
-    bool occupied(const Position& pos) const {
-      return board[pos.row][pos.col];
-    }
-
+    Position emptySlotIndex;
     std::vector<std::vector<char> > board;
 };
 
@@ -59,19 +52,38 @@ Board::Board(const int size)
     board.push_back(b);
   }
   board[size/2][size/2] = START;
+  emptySlotIndex.setPosition(size/2, size/2);
 }
 
 void Board::possibleStates(std::vector<Move>& moves) const
 {
   moves.clear();
 
-  for(int i = 0; i < BoardSize::size(); i++) {
-    for(int j = 0; j <= BoardSize::size(); j++)
-    {
-      Position empty(i,j);
+  Position currentPosition(emptySlotIndex);
 
-      if (occupied(empty))
-          continue;
+  for ( int i = 0 ; i < NUMBER_OF_MOVES/2; i++ ) {
+    if ( currentPosition.canMoveTo(MOVES[i]) && tokenForPosition(currentPosition) == RED )
+      moves.push_back(Move(emptySlotIndex, MOVES[i]));
+  }
+
+  for ( int i = 2 ; i < NUMBER_OF_MOVES; i++ ) {
+    if ( currentPosition.canMoveTo(MOVES[i]) && tokenForPosition(currentPosition) == RED )
+      moves.push_back(Move(emptySlotIndex, MOVES[i]));
+  }
+
+  Position currentPosition(emptySlotIndex);
+  if ( currentPosition.canMoveTo(MOVES[0]) ) {
+    currentPosition.move(MOVES[0]);
+    if ( tokenForPosition(MOVES[NORTH]) == RED )
+      // PASS
+  }
+
+  Position currentPosition(emptySlotIndex);
+  if ( currentPosition.canMoveTo(JumpNorth) )
+
+  JumpEast(+2,+0);
+  JumpSouth(+0,+2);
+  JumpWest(-2,+0);
 
       for(int m = 0; m < 4; m++)
       {
@@ -85,6 +97,11 @@ void Board::possibleStates(std::vector<Move>& moves) const
       }
     }
   }
+}
+
+char tokenForPosition(const Position& pos)
+{
+  return board[pos.row][pow.col];
 }
 
 void Board::move(const Move& move)

@@ -7,7 +7,6 @@
 //           winning successive board positions as children, representing
 //           the next logical board position from give one)
 //
-//
 
 #include <iostream>
 #include <iomanip>
@@ -18,20 +17,8 @@
 
 #include "ForeAft.hpp"
 
-using namespace std;
-
-// something like this?
-bool JumpsForToken(char token) {
-  //if ( Position(+0,-1).token != token ) return true;
-  //if ( Position(+0,+1).token != token ) return true;
-  //if ( Position(+1,+0).token != token ) return true;
-  //if ( Position(-1,+0).token != token ) return true;
-  return true;
-}
-
-// I'm 12 and what is this
-//static const int NUMMOVEMENTS = sizeof(MOVES)/sizeof(Position);
-static const int NUMMOVEMENTS = 8;
+using std::vector;
+using std::cin;
 
 int main(int argc, char* argv[])
 {
