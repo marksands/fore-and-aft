@@ -45,43 +45,44 @@ TEST_GROUP(Position)
     LONGS_EQUAL( p->col, 2+1 )
   }
 
+const char* GRID[3] = {
+  "RRR00RRR00RRSBB00BBB00BBB",
+  "RRRR000RRRR000RRRR000RRRSBBB000BBBB000BBBB000BBBB",
+  "RRRRR0000RRRRR0000RRRRR0000RRRRR0000RRRRSBBBB0000BBBBB0000BBBBB0000BBBBB0000BBBBB"
+};
+static int test_grid_size = 5;
+
 TEST_GROUP(Board)
 {
-  
-  Board *board5;
-  Board *board7;
-  Board *board9;
+
+  Board *board;
 
   void setup()
   {
-    board5 = new Board(5);
-    board7 = new Board(7);
-    board9 = new Board(9);    
+    board = new Board(test_grid_size);
   }
 
   void teardown()
   {
-    delete board5;
-    delete board7;
-    delete board9;
+    delete board;
+  }
+
+    // Helper Method
+  void nextBoard()
+  {
+    test_grid_size += 2;
+    delete board;
+    board = new Board(test_grid_size);
   }
 
 };
 
-  TEST(Board, 5x5GridCorrectPlacement)
+  TEST(Board, SetupAndTestGridPlacement)
   {
-    STRCMP_EQUAL( board5->chargrid.c_str(),
-      "RRR00RRR00RRSBB00BBB00BBB")
+    for ( int i = 0; i < 3; i++ ) {
+      STRCMP_EQUAL( board->chargrid.c_str(), GRID[i] );
+      nextBoard();
+    }
   }
 
-  TEST(Board, 7x7GridCorrectPlacement)
-  {
-    STRCMP_EQUAL( board7->chargrid.c_str(),
-      "RRRR000RRRR000RRRR000RRRSBBB000BBBB000BBBB000BBBB")
-  }
 
-  TEST(Board, 9x9GridCorrectPlacement)
-  {
-    STRCMP_EQUAL( board9->chargrid.c_str(),
-      "RRRRR0000RRRRR0000RRRRR0000RRRRR0000RRRRSBBBB0000BBBBB0000BBBBB0000BBBBB0000BBBBB")
-  }
