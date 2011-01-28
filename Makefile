@@ -16,6 +16,20 @@ CXX = g++
 # dirs
 OBJDIR = .
 
+# platform dependent
+UNAME = $(shell uname)
+
+ifeq ($(UNAME), Linux)
+  # do something Linux-y
+endif
+ifeq ($(UNAME), Solaris)
+  # do something Solaris-y
+endif
+ifeq ($(UNAME), Darwin) 
+  # do something Apple-y
+endif
+
+
 # SOURCES
 PRODUCTION_CODE = main.cpp
 #TEST_CODE = $(wildcard tests/*.cpp)
