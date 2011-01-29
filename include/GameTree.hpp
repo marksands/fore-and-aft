@@ -5,14 +5,11 @@
 #include <iostream>
 #include <list>
 
-#include "Board.hpp"
-#include "Boardsize.hpp"
-
 class Board;
 
 class GameTree {
   public:
-    GameTree(const Board& state);
+    GameTree(const Board& state) : state_(state) { }
 
     void pushTree(GameTree* tree) { children.push_back(tree); }
     int numChildren() const { return children.size(); }
@@ -21,7 +18,5 @@ class GameTree {
     Board state_;
     std::list<GameTree*> children;
 };
-
-GameTree::GameTree(const Board& state) : state_(state) { }
 
 #endif

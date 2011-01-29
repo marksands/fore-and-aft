@@ -15,7 +15,7 @@
 #include <list>
 #include <memory>
 
-#include "ForeAft.hpp"
+#include "../include/ForeAft.hpp"
 
 using std::vector;
 using std::cin;
@@ -26,15 +26,14 @@ int main(int argc, char* argv[])
   //cin >> size;
 
   do {
-    BoardSize::board_size = size;
     Board board(size);
 
-    vector<Move> moves;
-    board.possibleStates(moves);
+    vector<Board> states;
+    board.possibleStates(states);
 
     GameTree root(board);
-    for (u_int32 i = 0; i < moves.size(); ++i) {
-      board.play(moves[i], root);
+    for (u_int32 i = 0; i < states.size(); ++i) {
+      board.play(states[i], root);
     }
 
     //while (!root.walk());

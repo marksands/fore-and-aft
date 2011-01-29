@@ -31,27 +31,20 @@ endif
 
 
 # SOURCES
-PRODUCTION_CODE = main.cpp
-#TEST_CODE = $(wildcard tests/*.cpp)
-#TEST_CODE = tests/TestHelper.cpp tests/TestMain.cpp tests/TestRunner.cpp
-TEST_CODE_HELPER = tests/TestHelper.cpp
-TEST_CODE_MAIN = tests/TestMain.cpp
-TEST_CODE_RUNNER = tests/TestRunner.cpp
+PRODUCTION_CODE = src/main.cpp src/Position.cpp src/Board.cpp
+TEST_CODE = tests/TestHelper.cpp tests/TestMain.cpp tests/TestRunner.cpp src/Position.cpp src/Board.cpp
 
 P_OBJECTS = $(PRODUCTION_CODE:.cpp=.o)
-T_OBJECTS_HELPER = $(TEST_CODE_HELPER:.cpp=.o)
-T_OBJECTS_MAIN = $(TEST_CODE_MAIN:.cpp=.o)
-T_OBJECTS_RUNNER = $(TEST_CODE_RUNNER:.cpp=.o)
-
-#PRODUCTION_OBJECTS = $(PRODUCTION_CODE:.cpp=.o)
-#TEST_OBJECTS = $(addprefix $(OBJDIR)/,$(TEST_CODE:.cpp=.o))
-#TEST_OBJECTS =  $(TEST_CODE:.cpp=.o)
+T_OBJECTS = $(TEST_CODE:.cpp=.o)
 
 # home
 PROJECT_ROOT=.
 
+# CppUTest root
+CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
+
 # gcc flags + frameworks
-CFLAGS = -g -O2 -c -Wall -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
+CFLAGS = -g -O2 -c -Wall -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
 GLUTFLAGS = -framework GLUT -framework OpenGL
 COCOAFLAGS = -framework Cocoa
 
@@ -59,13 +52,15 @@ COCOAFLAGS = -framework Cocoa
 EXECUTABLE = graph
 TEST_EXECUTABLE = test
 
+#CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
+
 # Include CppUnit
 CPPFLAGS = -g -O2 -c -Wall -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
 LIB = $(CPPUTEST_HOME)lib/libCppUTest.a
 
 all: clean $(TEST_EXECUTABLE) cleanup
 
-production: $(EXECUTABLE) cleanup
+production: clean $(EXECUTABLE) cleanup
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
@@ -81,12 +76,12 @@ $(EXECUTABLE): $(P_OBJECTS)
 	@echo -- Link finished --
 	@echo $(PS_CLEAR)
 
-$(TEST_EXECUTABLE): $(T_OBJECTS_RUNNER) $(T_OBJECTS_MAIN) $(T_OBJECTS_HELPER) 
+$(TEST_EXECUTABLE): $(T_OBJECTS)
 	@echo $(YELLOW)"========================================"
 	@echo "Linking the target $@"
 	@echo "========================================"
 	@echo $(PS_CLEAR)
-	@$(CXX) $(T_OBJECTS_RUNNER) $(T_OBJECTS_MAIN) $(T_OBJECTS_HELPER) -o $@ $(LIB)
+	@$(CXX) $(T_OBJECTS) -o $@ $(LIB)
 	@echo "$(CXX) *.o -o $@"
 	@echo $(YELLOW)
 	@echo -- Link finished --
