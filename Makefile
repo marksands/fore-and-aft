@@ -32,7 +32,7 @@ endif
 
 # SOURCES
 PRODUCTION_CODE = src/main.cpp src/Position.cpp src/Board.cpp
-TEST_CODE = tests/TestHelper.cpp tests/TestMain.cpp tests/TestRunner.cpp src/Position.cpp src/Board.cpp
+TEST_CODE = tests/TestMain.cpp src/Position.cpp src/Board.cpp
 
 P_OBJECTS = $(PRODUCTION_CODE:.cpp=.o)
 T_OBJECTS = $(TEST_CODE:.cpp=.o)

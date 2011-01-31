@@ -5,7 +5,8 @@
 #include <CppUTest/CommandLineTestRunner.h>
 #include <CppUTest/TestHarness.h>
 
-#include "TestRunner.hpp"
+#include "TestPosition.hpp"
+#include "TestBoard.hpp"
 
 int main(int argc, char **argv) {
     return CommandLineTestRunner::RunAllTests(argc, argv);
