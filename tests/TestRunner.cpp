@@ -1,3 +1,6 @@
+#include <iostream>
+#include <sstream>
+
 #include <CppUTest/CommandLineTestRunner.h>
 #include <CppUTest/TestHarness.h>
 
@@ -107,4 +110,69 @@ TEST_GROUP(Board)
     CHECK_EQUAL( afterSwap.board[aRow][aCol], 'S' );
   }
 
+  TEST(Board, TestNonReverseBoard)
+  {
+    Board b(5);
+    STRCMP_EQUAL( b.chargrid.c_str(), "RRR00RRR00RRSBB00BBB00BBB");
 
+    char nonReversedGrid[5][5] = {
+      {'R','R','R','0','0' },
+      {'R','R','R','0','0' },
+      {'R','R','S','B','B' },
+      {'0','0','B','B','B' },
+      {'0','0','B','B','B' }
+    };
+
+    for ( int i = 0; i < 5; i++ ) {
+      for ( int j = 0; j < 5; j++ )
+        CHECK_EQUAL( b.board[i][j], nonReversedGrid[i][j] );
+    }
+  }
+
+  TEST(Board, TestReverseBoard)
+  {
+    Board b(5);
+
+    b.reverse();
+    STRCMP_EQUAL( b.chargrid.c_str(), "BBB00BBB00BBSRR00RRR00RRR");
+
+    char reversedGrid[5][5] = {
+      {'B','B','B','0','0' },
+      {'B','B','B','0','0' },
+      {'B','B','S','R','R' },
+      {'0','0','R','R','R' },
+      {'0','0','R','R','R' }
+    };
+
+    for ( int i = 0; i < 5; i++ ) {
+      for ( int j = 0; j < 5; j++ )
+        CHECK_EQUAL( b.board[i][j], reversedGrid[i][j] );
+    }
+  }
+
+  TEST(Board, TestOverloadedComparisonOperator)
+  {
+    Board fivBoardA(5);
+    Board fivBoardB(5);
+    CHECK(fivBoardA == fivBoardB);
+
+    Board sevBoardA(7);
+    CHECK(!(fivBoardA == sevBoardA));
+  }
+
+  TEST(Board, TestOverloadedOutputOperator)
+  {
+    Board b(5);
+
+    std::stringstream s;
+    s << b;
+
+    std::string output;
+    output = "[R][R][R][0][0]\n";
+    output+= "[R][R][R][0][0]\n";
+    output+= "[R][R][S][B][B]\n";
+    output+= "[0][0][B][B][B]\n";
+    output+= "[0][0][B][B][B]\n";
+
+    CHECK_EQUAL( s.str(), output );
+  }

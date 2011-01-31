@@ -36,6 +36,23 @@ Board Board::swap(const Position& slot, const Position& token) const
   return newBoard;
 }
 
+void Board::reverse()
+{
+  char temp;
+
+  for ( int i = 0; i <= size_/2; i++ ) {
+    for ( int j = 0; j <= size_/2; j++ ) {
+      temp = board[i][j];
+
+      board[i][j] = board[size_-j-1][size_-i-1];
+      board[size_-j-1][size_-i-1] = temp;
+
+      chargrid[i*size_ + j] = chargrid[size_*size_ - (i*size_+j) - 1];
+      chargrid[size_*size_ - (i*size_+j) - 1] = temp;
+    }
+  }
+}
+
 void Board::possibleStates(std::vector<Board>& states)
 {
   states.clear();
@@ -74,7 +91,7 @@ char Board::tokenForPosition(const Position& pos)
 }
 
   // recursive!!
-void Board::play(const Board& currentState, GameTree& parent) const
+void Board::play(const Board& currentState, GameTree& parent, const Board& goalBoard) const
 {
   Board nextBoard(*this);
   //nextBoard.move(currentMove); // this advances the current state to the given move, do this #marksands
@@ -82,7 +99,8 @@ void Board::play(const Board& currentState, GameTree& parent) const
   std::auto_ptr<GameTree> node(new GameTree(nextBoard));
 
   //if ( nextBoard.state == goalstate ) {
-  if (0) { //nextBoard.numPegs() == 1) {
+  // if (0) { //nextBoard.numPegs() == 1) {
+  if ( nextBoard == goalBoard ) {
     parent.pushTree(node.release());
     return;
   }
@@ -93,7 +111,7 @@ void Board::play(const Board& currentState, GameTree& parent) const
 
     // for each new possible state, play the move with the current board! (is this BFS?)
   for (u_int32 i = 0; i < states.size(); ++i) {
-    nextBoard.play(states[i], *node);
+    nextBoard.play(states[i], *node, goalBoard);
   }
 
     // still not really sure what this does -_-
@@ -104,18 +122,17 @@ void Board::play(const Board& currentState, GameTree& parent) const
 
 ostream& operator<<(ostream& os, const Board& b)
 {
-  int boardCode = 0;
-  for (int i = 0; i < b.size_; ++i)
-  {
-    os << setfill(' ') << setw(b.size_-i) << " ";
-    for (int j = 0; j <= i; ++j)
-    {
-      os << b.board[i][j] << ' ';
-
-      boardCode <<= 1;
-      if (b.board[i][j]) boardCode |= 1;
-    }
-    os << endl;
+  for ( int i = 0; i < b.size_; i++ ) {
+    for ( int j = 0; j < b.size_; j++ )
+      os << "[" << b.board[i][j] << "]";
+    os << "\n";
   }
   return os;
 }
+
+bool operator==(const Board& lhs, const Board& rhs)
+{
+  return (bool)(lhs.chargrid == rhs.chargrid);;
+}
+
+  

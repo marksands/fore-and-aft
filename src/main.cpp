@@ -27,13 +27,15 @@ int main(int argc, char* argv[])
 
   do {
     Board board(size);
+    Board goalBoard(size);
+    goalBoard.reverse();
 
     vector<Board> states;
     board.possibleStates(states);
 
     GameTree root(board);
     for (u_int32 i = 0; i < states.size(); ++i) {
-      board.play(states[i], root);
+      board.play(states[i], root, goalBoard);
     }
 
     //while (!root.walk());

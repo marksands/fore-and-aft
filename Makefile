@@ -41,6 +41,7 @@ T_OBJECTS = $(TEST_CODE:.cpp=.o)
 PROJECT_ROOT=.
 
 # CppUTest root
+#CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3/
 CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
 
 # gcc flags + frameworks

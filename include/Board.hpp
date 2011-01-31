@@ -22,11 +22,13 @@ class Board {
     Board(const int size = 5);
 
     Board swap(const Position& slot, const Position& token) const;
+    void reverse();
 
     void possibleStates(std::vector<Board>& states);
-    void play(const Board& currentState, GameTree& parent) const;
+    void play(const Board& currentState, GameTree& parent, const Board& goalBoard) const;
 
     friend ostream& operator<<(ostream& os, const Board& b);
+    friend bool operator==(const Board& lhs, const Board& rhs);
 
     std::string chargrid;
     std::vector<std::vector<char> > board;
