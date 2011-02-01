@@ -25,23 +25,20 @@ int main(int argc, char* argv[])
   int size = 5;
   //cin >> size;
 
-  do {
+  //do {
     Board board(size);
+
     Board goalBoard(size);
     goalBoard.reverse();
 
     vector<Board> states;
-    board.possibleStates(states);
-
     GameTree root(board);
-    for (u_int32 i = 0; i < states.size(); ++i) {
-      board.play(states[i], root, goalBoard);
-    }
 
-    //while (!root.walk());
+    Timer t;
+    board.dfs(board, goalBoard);
 
-    cin >> size;
-  } while ( size != 0 );
+  //  cin >> size;
+  //} while ( size != 0 );
 
   return 0;
 }

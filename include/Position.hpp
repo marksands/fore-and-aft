@@ -9,9 +9,9 @@ using std::ostream;
 class Position {
   public:
     Position() : row(0), col(0), size_(5) {}
-    Position(int r, int c) : row(r), col(c) {}
+    Position(int c, int r) : row(r), col(c) {}
 
-    void setPosition(int r, int c) { row = r; col = c; }
+    void setPosition(int c, int r) { row = r; col = c; }
     void setBoardSize(int size) { size_ = size; }
 
     bool move(const Position& pos);
@@ -21,8 +21,21 @@ class Position {
     Position& operator+=(const Position& pos);
 
     friend ostream& operator<<(ostream& os, const Position& pos) {
-      os << pos.row << ',' << pos.col;
+      os << pos.col << ',' << pos.row;
       return os;
+    }
+
+    friend bool operator==(const Position& lhs, const Position& rhs) {
+      if ( lhs.row == rhs.row && lhs.col == rhs.col )
+        return true;
+      return false;
+    }
+
+    Position movePositionTo(const Position& pos) const
+    {
+      Position p(*this);
+      p += pos;
+      return p;
     }
 
     int row;

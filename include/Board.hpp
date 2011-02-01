@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "Position.hpp"
+#include "Global.hpp"
+#include "Hash.hpp"
 
 using std::ostream;
 using std::setfill;
@@ -25,7 +27,12 @@ class Board {
     void reverse();
 
     void possibleStates(std::vector<Board>& states);
-    void play(const Board& currentState, GameTree& parent, const Board& goalBoard) const;
+
+    void dfs(const Board& currentState, const Board& goalBoard);
+    bool walk(GameTree& parent);
+
+    bool validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
+    bool validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
 
     friend ostream& operator<<(ostream& os, const Board& b);
     friend bool operator==(const Board& lhs, const Board& rhs);
@@ -33,12 +40,13 @@ class Board {
     std::string chargrid;
     std::vector<std::vector<char> > board;
 
+    GameTree *root_;
   private:
     char tokenForPosition(const Position& pos);
 
     int size_;
-
     Position emptySlotIndex;
+    Hash<std::string> hash;
 };
 
 #endif

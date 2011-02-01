@@ -8,8 +8,8 @@
 */
 bool Position::valid()
 {
-  if (row <  0)            return false;
-  if (col <  0)            return false;
+  if (row <  0)       return false;
+  if (col <  0)       return false;
   if (row >= size_)   return false;
   if (col >= size_)   return false;
   if (row <  size_/2

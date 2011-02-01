@@ -44,6 +44,9 @@ PROJECT_ROOT=.
 #CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3/
 CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
 
+# compile with -pg
+# gprof executable_name gmon.out
+
 # gcc flags + frameworks
 CFLAGS = -g -O2 -c -Wall -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
 GLUTFLAGS = -framework GLUT -framework OpenGL
@@ -71,7 +74,7 @@ $(EXECUTABLE): $(P_OBJECTS)
 	@echo "Linking the target $@"
 	@echo "========================================"
 	@echo $(PS_CLEAR)
-	@$(CXX) $(P_OBJECTS) -o $@
+	@$(CXX) $(P_OBJECTS) -o $@ -pg
 	@echo "$(CXX) *.o -o $@"
 	@echo $(YELLOW)
 	@echo -- Link finished --
@@ -82,7 +85,7 @@ $(TEST_EXECUTABLE): $(T_OBJECTS)
 	@echo "Linking the target $@"
 	@echo "========================================"
 	@echo $(PS_CLEAR)
-	@$(CXX) $(T_OBJECTS) -o $@ $(LIB)
+	@$(CXX) $(T_OBJECTS) -o $@ $(LIB) -pg
 	@echo "$(CXX) *.o -o $@"
 	@echo $(YELLOW)
 	@echo -- Link finished --
@@ -93,7 +96,7 @@ $(TEST_EXECUTABLE): $(T_OBJECTS)
 	@echo "Compiling "$(BOLDWHITE)"$<"
 	@echo $(GREEN)"========================================"
 	@echo $(PS_CLEAR)
-	@$(CXX) $(CPPFLAGS) $< -o $@
+	@$(CXX) $(CPPFLAGS) $< -o $@ -pg
 	@echo "$(CXX) $<"
 	@echo
 

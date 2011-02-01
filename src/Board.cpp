@@ -1,13 +1,17 @@
+#include <stack>
+#include <memory>
 #include "Board.hpp"
 #include "GameTree.hpp"
-#include "Global.hpp"
 
 Board::Board(const int size) : size_(size)
 {
+  board.reserve(size_);
   chargrid = "";
+
   for (int i = 0; i < size; ++i)
   {
     std::vector<char> b;
+    b.reserve(size_);
     for ( int j = 0; j < size; j++ )
     {
       if      ((i <= size/2) && (j <= size/2)) { b.push_back(RED);   chargrid += RED; }
@@ -25,13 +29,17 @@ Board Board::swap(const Position& slot, const Position& token) const
 {
   Board newBoard(*this);
 
-  char temp = newBoard.board[slot.row][slot.col];
+  char temp = newBoard.board[slot.col][slot.row];
 
-  newBoard.board[slot.row][slot.col] = newBoard.board[token.row][token.col];
-  newBoard.chargrid[size_*slot.row + slot.col] = newBoard.board[token.row][token.col];
+  newBoard.board[slot.col][slot.row] = newBoard.board[token.col][token.row];
+  newBoard.chargrid[size_*slot.col + slot.row] = newBoard.board[token.col][token.row];
 
-  newBoard.board[token.row][token.col] = temp;
-  newBoard.chargrid[size_*token.row + token.col] = temp;
+  newBoard.board[token.col][token.row] = temp;
+  newBoard.chargrid[size_*token.col + token.row] = temp;
+
+    // update the emptySlotIndex, if that was a swapped tile
+  if (newBoard.emptySlotIndex == slot)
+    newBoard.emptySlotIndex = token;
 
   return newBoard;
 }
@@ -57,67 +65,171 @@ void Board::possibleStates(std::vector<Board>& states)
 {
   states.clear();
 
-  Position currentPosition(emptySlotIndex);
-  currentPosition.setBoardSize(size_);
+    /** One Tile Moves **/
 
-    // One Tile Moves
-  if ( currentPosition.canMoveTo(MOVES[NORTH]) && tokenForPosition(currentPosition) == RED )
-    states.push_back(swap(emptySlotIndex, MOVES[NORTH]));
-  if ( currentPosition.canMoveTo(MOVES[EAST]) && tokenForPosition(currentPosition) == BLUE )
-    states.push_back(swap(emptySlotIndex, MOVES[EAST]));
-  if ( currentPosition.canMoveTo(MOVES[SOUTH]) && tokenForPosition(currentPosition) == BLUE )
-    states.push_back(swap(emptySlotIndex, MOVES[SOUTH]));
-  if ( currentPosition.canMoveTo(MOVES[WEST]) && tokenForPosition(currentPosition) == RED )
-    states.push_back(swap(emptySlotIndex, MOVES[WEST]));
+  if ( validMoveToPosition(MOVES[NORTH], NORTH) ) {
+    Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[NORTH]));
+    if ( !hash.isThere(temp.chargrid) ) {
+      hash.insertEntry(temp.chargrid);
+      states.push_back(temp);
+    }
+  }
 
-    // Two Tile Moves
-  if ( currentPosition.canMoveTo(JUMPS[NORTH]) && tokenForPosition(currentPosition) == RED
-      && tokenForPosition(Position(currentPosition.row+0, currentPosition.col-1)) == BLUE )
-    states.push_back(swap(emptySlotIndex, JUMPS[NORTH]));
-  if ( currentPosition.canMoveTo(JUMPS[EAST]) && tokenForPosition(currentPosition) == BLUE
-      && tokenForPosition(Position(currentPosition.row+1, currentPosition.col+0)) == RED )
-    states.push_back(swap(emptySlotIndex, JUMPS[EAST]));
-  if ( currentPosition.canMoveTo(JUMPS[SOUTH]) && tokenForPosition(currentPosition) == BLUE
-      && tokenForPosition(Position(currentPosition.row+0, currentPosition.col+1)) == RED )  
-    states.push_back(swap(emptySlotIndex, JUMPS[SOUTH]));
-  if ( currentPosition.canMoveTo(JUMPS[WEST]) && tokenForPosition(currentPosition) == RED
-      && tokenForPosition(Position(currentPosition.row-1, currentPosition.col+0)) == BLUE )
-    states.push_back(swap(emptySlotIndex, JUMPS[WEST]));
+  if ( validMoveToPosition(MOVES[EAST], EAST) ) {
+    Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[EAST]));
+    if ( !hash.isThere(temp.chargrid) ) {
+      hash.insertEntry(temp.chargrid);
+      states.push_back(temp);
+    }
+  }
+
+  if ( validMoveToPosition(MOVES[SOUTH], SOUTH) ) {
+    Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[SOUTH]));
+    if ( !hash.isThere(temp.chargrid) ) {
+      hash.insertEntry(temp.chargrid);
+      states.push_back(temp);
+    }
+  }
+
+  if ( validMoveToPosition(MOVES[WEST], WEST) ) {
+    Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[WEST]));
+    if ( !hash.isThere(temp.chargrid) ) {
+      hash.insertEntry(temp.chargrid);
+      states.push_back(temp);
+    }
+  }
+
+    /** Two Tile Moves **/
+
+  if ( validJumpToPosition(JUMPS[NORTH], NORTH) ) {
+    Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[NORTH]));
+    if ( !hash.isThere(temp.chargrid) ) {
+      hash.insertEntry(temp.chargrid);
+      states.push_back(temp);
+    }
+  }
+
+  if ( validJumpToPosition(JUMPS[EAST], EAST) ) {
+    Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[EAST]));
+    if ( !hash.isThere(temp.chargrid) ) {
+      hash.insertEntry(temp.chargrid);
+      states.push_back(temp);
+    }
+  }
+
+  if ( validJumpToPosition(JUMPS[SOUTH], SOUTH) ) {
+    Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[SOUTH]));
+    if ( !hash.isThere(temp.chargrid) ) {
+      hash.insertEntry(temp.chargrid);
+      states.push_back(temp);
+    }
+  }
+
+  if ( validJumpToPosition(JUMPS[WEST], WEST) ) {
+    Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[WEST]));
+    if ( !hash.isThere(temp.chargrid) ) {
+      hash.insertEntry(temp.chargrid);
+      states.push_back(temp);
+    }
+  }
+
 }
 
 char Board::tokenForPosition(const Position& pos)
 {
-  return board[pos.row][pos.col];
+  return board[pos.col][pos.row];
 }
 
-  // recursive!!
-void Board::play(const Board& currentState, GameTree& parent, const Board& goalBoard) const
+bool Board::validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction)
 {
-  Board nextBoard(*this);
-  //nextBoard.move(currentMove); // this advances the current state to the given move, do this #marksands
+  Position newPosition(emptySlotIndex);
+  newPosition.setBoardSize(size_);
 
-  std::auto_ptr<GameTree> node(new GameTree(nextBoard));
+  newPosition += pos;
 
-  //if ( nextBoard.state == goalstate ) {
-  // if (0) { //nextBoard.numPegs() == 1) {
-  if ( nextBoard == goalBoard ) {
-    parent.pushTree(node.release());
-    return;
+  if ( !newPosition.valid() )
+    return false;
+
+  if (direction == NORTH || direction == WEST) {
+    if ( tokenForPosition(newPosition) != RED )
+      return false;
+  } else {
+    if ( tokenForPosition(newPosition) != BLUE )
+      return false;
   }
 
-    // populate "states" (moves) with the possible moves avaialbe for this state
-  std::vector<Board> states;
-  nextBoard.possibleStates(states);
+  return true;
+}
 
-    // for each new possible state, play the move with the current board! (is this BFS?)
-  for (u_int32 i = 0; i < states.size(); ++i) {
-    nextBoard.play(states[i], *node, goalBoard);
+bool Board::validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS direction)
+{
+  Position newPosition(emptySlotIndex);
+  Position jumpPosition(emptySlotIndex);
+
+  newPosition.setBoardSize(size_);
+  jumpPosition.setBoardSize(size_);
+
+  newPosition += pos;
+
+  if ( !newPosition.valid() )
+    return false;
+
+  if (direction == NORTH) {
+    jumpPosition += Position(0,-1);
+    if ( tokenForPosition(newPosition) != RED || tokenForPosition(jumpPosition) != BLUE )
+      return false;
+  }
+  else if (direction == EAST) {
+    jumpPosition += Position(1,0);
+    if ( tokenForPosition(newPosition) != BLUE || tokenForPosition(jumpPosition) != RED )
+      return false;
+  }
+  else if (direction == SOUTH) {
+    jumpPosition += Position(0,1);
+    if ( tokenForPosition(newPosition) != BLUE || tokenForPosition(jumpPosition) != RED )
+      return false;
+  }
+  else if (direction == WEST) {
+    jumpPosition += Position(-1,0);
+    if ( tokenForPosition(newPosition) != RED || tokenForPosition(jumpPosition) != BLUE )
+      return false;
   }
 
-    // still not really sure what this does -_-
-  if (node->numChildren() > 0) {
-    parent.pushTree(node.release());
+  return true;
+}
+
+void Board::dfs(const Board& currentState, const Board& goalBoard)
+{
+  std::stack<Board> open;
+  open.push(currentState);
+
+  root_ = new GameTree(currentState);
+
+  std::stack<Board> closed;
+
+  while ( !open.empty() )
+  {
+    Board currentBoard = open.top(); open.pop();
+    closed.push(currentBoard);
+
+    std::auto_ptr<GameTree> node(new GameTree(currentBoard));
+
+    if (currentBoard == goalBoard) {
+      root_->push(node.release());
+      break;
+    }
+
+    std::vector<Board> states;
+    currentBoard.possibleStates(states);
+
+    for ( u_int32 i = 0; i < states.size(); i++ )
+      open.push(states[i]);
+
+    root_->push(node.release());
   }
+
+  while (!root_->walk());
+  delete root_;
 }
 
 ostream& operator<<(ostream& os, const Board& b)
@@ -135,4 +247,3 @@ bool operator==(const Board& lhs, const Board& rhs)
   return (bool)(lhs.chargrid == rhs.chargrid);;
 }
 
-  

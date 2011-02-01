@@ -43,19 +43,19 @@ TEST_GROUP(Board)
     int bRow = 5/2;
     int bCol = 5/2;
 
-    int aRow = 1;
-    int aCol = 2;
+    int aCol = 1;
+    int aRow = 2;
 
-    Board afterSwap( boardFiv->swap( Position(bRow, bCol), Position(aRow, aCol) ) );
+    Board afterSwap( boardFiv->swap( Position(bCol, bRow), Position(aCol, aRow) ) );
 
     STRCMP_EQUAL( boardFiv->chargrid.c_str(), beforeGrid );
     STRCMP_EQUAL( afterSwap.chargrid.c_str(), afterGrid );
 
-    CHECK_EQUAL( boardFiv->board[bRow][bCol], 'S' );
-    CHECK_EQUAL( boardFiv->board[aRow][aCol], 'R' );
+    CHECK_EQUAL( boardFiv->board[bCol][bRow], 'S' );
+    CHECK_EQUAL( boardFiv->board[aCol][aRow], 'R' );
 
-    CHECK_EQUAL( afterSwap.board[bRow][bCol], 'R' );
-    CHECK_EQUAL( afterSwap.board[aRow][aCol], 'S' );
+    CHECK_EQUAL( afterSwap.board[bCol][bRow], 'R' );
+    CHECK_EQUAL( afterSwap.board[aCol][aRow], 'S' );
   }
 
   TEST(Board, TestNonReverseBoard)
@@ -124,3 +124,101 @@ TEST_GROUP(Board)
 
     CHECK_EQUAL( s.str(), output );
   }
+
+  TEST(Board, TestPossibleStatesAreValid)
+  {
+      // a 4-state valid case
+    Board a(5);
+
+    CHECK( a.validMoveToPosition(MOVES[NORTH], NORTH) );
+    CHECK( a.validMoveToPosition(MOVES[EAST], EAST) );
+    CHECK( a.validMoveToPosition(MOVES[SOUTH], SOUTH) );
+    CHECK( a.validMoveToPosition(MOVES[WEST], WEST) );
+
+    CHECK(! a.validJumpToPosition(JUMPS[NORTH], NORTH) );
+    CHECK(! a.validJumpToPosition(JUMPS[EAST], EAST) );
+    CHECK(! a.validJumpToPosition(JUMPS[SOUTH], SOUTH) );
+    CHECK(! a.validJumpToPosition(JUMPS[WEST], WEST) );
+
+      // a 3-state valid case
+    Board b = a.swap( Position(2,2), Position(3,2) );
+
+    /*   0  1  2  3  4
+      0 [R][R][R][0][0]
+      1 [R][R][R][0][0]
+      2 [R][R][B][S][B]
+      3 [0][0][B][B][B]
+      4 [0][0][B][B][B] */
+
+    CHECK( !b.validMoveToPosition(MOVES[NORTH], NORTH) );
+    CHECK(  b.validMoveToPosition(MOVES[EAST], EAST) );
+    CHECK(  b.validMoveToPosition(MOVES[SOUTH], SOUTH) );
+    CHECK( !b.validMoveToPosition(MOVES[WEST], WEST) );
+
+    CHECK( !b.validJumpToPosition(JUMPS[NORTH], NORTH) );
+    CHECK( !b.validJumpToPosition(JUMPS[EAST], EAST) );
+    CHECK( !b.validJumpToPosition(JUMPS[SOUTH], SOUTH) );
+    CHECK(  b.validJumpToPosition(JUMPS[WEST], WEST) );
+
+      // a 3-state valid case
+    Board c = a.swap( Position(2,2), Position(1,2) );
+
+    /*   0  1  2  3  4
+      0 [R][R][R][0][0]
+      1 [R][R][R][0][0]
+      2 [R][S][R][B][B]
+      3 [0][0][B][B][B]
+      4 [0][0][B][B][B] */
+
+    CHECK(  c.validMoveToPosition(MOVES[NORTH], NORTH) );
+    CHECK( !c.validMoveToPosition(MOVES[EAST], EAST) );
+    CHECK( !c.validMoveToPosition(MOVES[SOUTH], SOUTH) );
+    CHECK(  c.validMoveToPosition(MOVES[WEST], WEST) );
+
+    CHECK( !c.validJumpToPosition(JUMPS[NORTH], NORTH) );
+    CHECK(  c.validJumpToPosition(JUMPS[EAST], EAST) );
+    CHECK( !c.validJumpToPosition(JUMPS[SOUTH], SOUTH) );
+    CHECK( !c.validJumpToPosition(JUMPS[WEST], WEST) );
+
+      // a 0-state valid case
+    Board d = a.swap( Position(2,2), Position(0,0) );
+
+    /*   0  1  2  3  4
+      0 [S][R][R][0][0]
+      1 [R][R][R][0][0]
+      2 [R][R][R][B][B]
+      3 [0][0][B][B][B]
+      4 [0][0][B][B][B] */
+
+    CHECK( !d.validMoveToPosition(MOVES[NORTH], NORTH) );
+    CHECK( !d.validMoveToPosition(MOVES[EAST], EAST) );
+    CHECK( !d.validMoveToPosition(MOVES[SOUTH], SOUTH) );
+    CHECK( !d.validMoveToPosition(MOVES[WEST], WEST) );
+
+    CHECK( !d.validJumpToPosition(JUMPS[NORTH], NORTH) );
+    CHECK( !d.validJumpToPosition(JUMPS[EAST], EAST) );
+    CHECK( !d.validJumpToPosition(JUMPS[SOUTH], SOUTH) );
+    CHECK( !d.validJumpToPosition(JUMPS[WEST], WEST) );
+
+      // a 2-state valid case
+    Board e = a.swap( Position(2,2), Position(3,3) );
+
+    /*   0  1  2  3  4
+      0 [R][R][R][0][0]
+      1 [R][R][R][0][0]
+      2 [R][R][B][B][B]
+      3 [0][0][B][S][B]
+      4 [0][0][B][B][B] */
+
+    CHECK( !e.validMoveToPosition(MOVES[NORTH], NORTH) );
+    CHECK(  e.validMoveToPosition(MOVES[EAST], EAST) );
+    CHECK(  e.validMoveToPosition(MOVES[SOUTH], SOUTH) );
+    CHECK( !e.validMoveToPosition(MOVES[WEST], WEST) );
+
+    CHECK( !e.validJumpToPosition(JUMPS[NORTH], NORTH) );
+    CHECK( !e.validJumpToPosition(JUMPS[EAST], EAST) );
+    CHECK( !e.validJumpToPosition(JUMPS[SOUTH], SOUTH) );
+    CHECK( !e.validJumpToPosition(JUMPS[WEST], WEST) );
+  }
+
+

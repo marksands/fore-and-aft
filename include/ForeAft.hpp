@@ -8,5 +8,6 @@
 #include "Move.hpp"
 #include "Position.hpp"
 #include "Timer.hpp"
+#include "Hash.hpp"
 
 #endif
