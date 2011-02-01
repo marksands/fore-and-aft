@@ -101,7 +101,7 @@ $(TEST_EXECUTABLE): $(T_OBJECTS)
 	@echo
 
 cleanup:
-	@rm -rf *.o tests/*.o
+	@rm -rf *.o src/*.o tests/*.o
 
 clean: cleanup
 	@rm -rf $(EXECUTABLE) $(TEST_EXECUTABLE)

@@ -29,7 +29,6 @@ class Board {
     void possibleStates(std::vector<Board>& states);
 
     void dfs(const Board& currentState, const Board& goalBoard);
-    bool walk(GameTree& parent);
 
     bool validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
     bool validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);

@@ -34,8 +34,10 @@ int main(int argc, char* argv[])
     vector<Board> states;
     GameTree root(board);
 
-    Timer t;
-    board.dfs(board, goalBoard);
+    if (1) {
+      Timer t;
+      board.dfs(board, goalBoard);
+    }
 
   //  cin >> size;
   //} while ( size != 0 );

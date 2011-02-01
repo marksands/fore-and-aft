@@ -203,8 +203,6 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
   std::stack<Board> open;
   open.push(currentState);
 
-  root_ = new GameTree(currentState);
-
   std::stack<Board> closed;
 
   while ( !open.empty() )
@@ -214,22 +212,20 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
 
     std::auto_ptr<GameTree> node(new GameTree(currentBoard));
 
-    if (currentBoard == goalBoard) {
-      root_->push(node.release());
+    if (currentBoard == goalBoard)
       break;
-    }
 
     std::vector<Board> states;
     currentBoard.possibleStates(states);
 
     for ( u_int32 i = 0; i < states.size(); i++ )
       open.push(states[i]);
-
-    root_->push(node.release());
   }
 
-  while (!root_->walk());
-  delete root_;
+  while( !closed.empty() )
+  {
+    std::cout << closed.top() << std::endl; closed.pop();
+  }
 }
 
 ostream& operator<<(ostream& os, const Board& b)

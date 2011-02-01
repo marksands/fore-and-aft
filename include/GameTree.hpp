@@ -25,19 +25,16 @@ class GameTree {
     std::list<GameTree*> children_;
 };
 
-bool GameTree::walk(GameTree& parent)
+inline bool GameTree::walk(GameTree& parent)
 {
   cout << parent.state_ << endl;
 
   std::list<GameTree*>::iterator firstChild = parent.children_.begin();
-  if (firstChild == parent.children_.end())
-  {
-      cout << "========================" << endl;
-      return true;
-  }
 
-  if (GameTree::walk(*(*firstChild)))
-  {
+  if (firstChild == parent.children_.end())
+      return true;
+
+  if (GameTree::walk(*(*firstChild))) {
       delete *firstChild;
       parent.children_.erase(firstChild);
   }
