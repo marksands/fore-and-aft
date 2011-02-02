@@ -13,7 +13,6 @@
 #include <cstdlib>
 #include <vector>
 #include <list>
-#include <memory>
 
 #include "../include/ForeAft.hpp"
 
@@ -23,9 +22,10 @@ using std::cin;
 int main(int argc, char* argv[])
 {
   int size = 5;
-  //cin >> size;
+  cout << "boardsize: ";
+  cin >> size;
 
-  //do {
+  do {
     Board board(size);
 
     Board goalBoard(size);
@@ -39,8 +39,9 @@ int main(int argc, char* argv[])
       board.dfs(board, goalBoard);
     }
 
-  //  cin >> size;
-  //} while ( size != 0 );
+    cout << "boardsize or 0: ";
+    cin >> size;
+  } while ( size != 0 );
 
   return 0;
 }

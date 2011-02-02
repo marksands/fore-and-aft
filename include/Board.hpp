@@ -43,9 +43,13 @@ class Board {
   private:
     char tokenForPosition(const Position& pos);
 
+    Board *parent_;
+
     int size_;
     Position emptySlotIndex;
     Hash<std::string> hash;
 };
+
+static int movesNESW[8] = { 0,0,0,0,0,0,0,0 };
 
 #endif

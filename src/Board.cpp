@@ -1,9 +1,10 @@
 #include <stack>
+#include <queue>
 #include <memory>
 #include "Board.hpp"
 #include "GameTree.hpp"
 
-Board::Board(const int size) : size_(size)
+Board::Board(const int size) : parent_(NULL), size_(size)
 {
   board.reserve(size_);
   chargrid = "";
@@ -65,34 +66,51 @@ void Board::possibleStates(std::vector<Board>& states)
 {
   states.clear();
 
+  int maxJumps = 4;
+
     /** One Tile Moves **/
 
   if ( validMoveToPosition(MOVES[NORTH], NORTH) ) {
+    maxJumps--; movesNESW[0]++;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[NORTH]));
+    std::auto_ptr<Board> node(new Board(*this));
+    temp.parent_ = node.release();    
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
     }
   }
 
+  if ( maxJumps == 0 ) return;
   if ( validMoveToPosition(MOVES[EAST], EAST) ) {
+    maxJumps--;movesNESW[1]++;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[EAST]));
+    std::auto_ptr<Board> node(new Board(*this));
+    temp.parent_ = node.release();    
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
     }
   }
 
+  if ( maxJumps == 0 ) return;
   if ( validMoveToPosition(MOVES[SOUTH], SOUTH) ) {
+    maxJumps--;movesNESW[2]++;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[SOUTH]));
+    std::auto_ptr<Board> node(new Board(*this));
+    temp.parent_ = node.release();    
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
     }
   }
 
+  if ( maxJumps == 0 ) return;
   if ( validMoveToPosition(MOVES[WEST], WEST) ) {
+    maxJumps--;movesNESW[3]++;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[WEST]));
+    std::auto_ptr<Board> node(new Board(*this));
+    temp.parent_ = node.release();    
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -101,32 +119,48 @@ void Board::possibleStates(std::vector<Board>& states)
 
     /** Two Tile Moves **/
 
+  if ( maxJumps == 0 ) return;
   if ( validJumpToPosition(JUMPS[NORTH], NORTH) ) {
+    maxJumps--;movesNESW[4]++;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[NORTH]));
+    std::auto_ptr<Board> node(new Board(*this));
+    temp.parent_ = node.release();    
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
     }
   }
 
+  if ( maxJumps == 0 ) return;
   if ( validJumpToPosition(JUMPS[EAST], EAST) ) {
+    maxJumps--;movesNESW[5]++;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[EAST]));
+    std::auto_ptr<Board> node(new Board(*this));
+    temp.parent_ = node.release();    
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
     }
   }
 
+  if ( maxJumps == 0 ) return;
   if ( validJumpToPosition(JUMPS[SOUTH], SOUTH) ) {
+    maxJumps--;movesNESW[6]++;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[SOUTH]));
+    std::auto_ptr<Board> node(new Board(*this));
+    temp.parent_ = node.release();    
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
     }
   }
 
+  if ( maxJumps == 0 ) return;
   if ( validJumpToPosition(JUMPS[WEST], WEST) ) {
+    maxJumps--;movesNESW[7]++;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[WEST]));
+    std::auto_ptr<Board> node(new Board(*this));
+    temp.parent_ = node.release();    
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -198,6 +232,7 @@ bool Board::validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS directi
   return true;
 }
 
+// this is still not finding the direct path HOW TO DO?! ;_;
 void Board::dfs(const Board& currentState, const Board& goalBoard)
 {
   std::stack<Board> open;
@@ -210,8 +245,6 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
     Board currentBoard = open.top(); open.pop();
     closed.push(currentBoard);
 
-    std::auto_ptr<GameTree> node(new GameTree(currentBoard));
-
     if (currentBoard == goalBoard)
       break;
 
@@ -222,10 +255,25 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
       open.push(states[i]);
   }
 
-  while( !closed.empty() )
+  Board node = closed.top();
+  while( node.parent_ != NULL )
   {
-    std::cout << closed.top() << std::endl; closed.pop();
+    std::cout << node << std::endl;
+    node = *node.parent_;
   }
+
+/*
+  std::cout << "\n" << 
+    << "north: " << movesNESW[0] << std::endl
+    << "east: " << movesNESW[1] << std::endl
+    << "south: " << movesNESW[2] << std::endl
+    << "west: " << movesNESW[3] << std::endl
+
+    << "north: " << movesNESW[4] << std::endl
+    << "east: " << movesNESW[5] << std::endl
+    << "south: " << movesNESW[6] << std::endl
+    << "west: " << movesNESW[7] << std::endl;
+  */
 }
 
 ostream& operator<<(ostream& os, const Board& b)
@@ -242,4 +290,3 @@ bool operator==(const Board& lhs, const Board& rhs)
 {
   return (bool)(lhs.chargrid == rhs.chargrid);;
 }
-
