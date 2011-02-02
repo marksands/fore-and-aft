@@ -71,7 +71,7 @@ void Board::possibleStates(std::vector<Board>& states)
     /** One Tile Moves **/
 
   if ( validMoveToPosition(MOVES[NORTH], NORTH) ) {
-    maxJumps--; movesNESW[0]++;
+    maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[NORTH]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
@@ -83,7 +83,7 @@ void Board::possibleStates(std::vector<Board>& states)
 
   if ( maxJumps == 0 ) return;
   if ( validMoveToPosition(MOVES[EAST], EAST) ) {
-    maxJumps--;movesNESW[1]++;
+    maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[EAST]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
@@ -95,7 +95,7 @@ void Board::possibleStates(std::vector<Board>& states)
 
   if ( maxJumps == 0 ) return;
   if ( validMoveToPosition(MOVES[SOUTH], SOUTH) ) {
-    maxJumps--;movesNESW[2]++;
+    maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[SOUTH]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
@@ -107,7 +107,7 @@ void Board::possibleStates(std::vector<Board>& states)
 
   if ( maxJumps == 0 ) return;
   if ( validMoveToPosition(MOVES[WEST], WEST) ) {
-    maxJumps--;movesNESW[3]++;
+    maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[WEST]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
@@ -121,7 +121,7 @@ void Board::possibleStates(std::vector<Board>& states)
 
   if ( maxJumps == 0 ) return;
   if ( validJumpToPosition(JUMPS[NORTH], NORTH) ) {
-    maxJumps--;movesNESW[4]++;
+    maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[NORTH]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
@@ -133,7 +133,7 @@ void Board::possibleStates(std::vector<Board>& states)
 
   if ( maxJumps == 0 ) return;
   if ( validJumpToPosition(JUMPS[EAST], EAST) ) {
-    maxJumps--;movesNESW[5]++;
+    maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[EAST]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
@@ -145,7 +145,7 @@ void Board::possibleStates(std::vector<Board>& states)
 
   if ( maxJumps == 0 ) return;
   if ( validJumpToPosition(JUMPS[SOUTH], SOUTH) ) {
-    maxJumps--;movesNESW[6]++;
+    maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[SOUTH]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
@@ -157,7 +157,7 @@ void Board::possibleStates(std::vector<Board>& states)
 
   if ( maxJumps == 0 ) return;
   if ( validJumpToPosition(JUMPS[WEST], WEST) ) {
-    maxJumps--;movesNESW[7]++;
+    maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[WEST]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
@@ -255,25 +255,17 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
       open.push(states[i]);
   }
 
+  int count = 0;
   Board node = closed.top();
   while( node.parent_ != NULL )
   {
+    count++;
     std::cout << node << std::endl;
     node = *node.parent_;
   }
 
-/*
-  std::cout << "\n" << 
-    << "north: " << movesNESW[0] << std::endl
-    << "east: " << movesNESW[1] << std::endl
-    << "south: " << movesNESW[2] << std::endl
-    << "west: " << movesNESW[3] << std::endl
-
-    << "north: " << movesNESW[4] << std::endl
-    << "east: " << movesNESW[5] << std::endl
-    << "south: " << movesNESW[6] << std::endl
-    << "west: " << movesNESW[7] << std::endl;
-  */
+  std::cout << std::setw(3) << "";
+  std::cout << "Total nodes: " << count << " seconds" << std::endl;
 }
 
 ostream& operator<<(ostream& os, const Board& b)

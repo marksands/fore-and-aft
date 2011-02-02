@@ -50,6 +50,4 @@ class Board {
     Hash<std::string> hash;
 };
 
-static int movesNESW[8] = { 0,0,0,0,0,0,0,0 };
-
 #endif
