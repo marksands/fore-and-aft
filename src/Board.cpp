@@ -265,7 +265,7 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
   }
 
   std::cout << std::setw(3) << "";
-  std::cout << "Total nodes: " << count << " seconds" << std::endl;
+  std::cout << "Total nodes: " << count << std::endl;
 }
 
 ostream& operator<<(ostream& os, const Board& b)

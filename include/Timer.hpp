@@ -15,5 +15,6 @@ class Timer {
               cout << setw(5) << " "
                    << "Total time: "
                    << ((double)(finish - start)/CLOCKS_PER_SEC)
+                   << " seconds"
                    << endl; }
 };
