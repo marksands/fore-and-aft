@@ -12,7 +12,8 @@
     template <class T>  
     void Hash<T>::Empty()
     {
-      for ( size_t i = 0; i < array.size(); i++ )
+      size_t size_ = array.size();
+      for ( size_t i = 0; i < size_; i++ )
         array[i].info = EMPTY;
 
       numberOfItems = 0;
@@ -26,8 +27,9 @@
     int Hash<T>::hash( T value ) const
     {
       unsigned int hash = 5381;
-      
-      for( size_t i = 0; i < value.length(); i++ )
+
+      size_t size_ = value.length();
+      for( size_t i = 0; i < size_; i++ )
         hash = ((hash << 5) + hash) + value[i];
 
       return hash;
@@ -40,7 +42,8 @@
     {
       unsigned int hash = 773;
 
-      for( size_t i = 0; i < value.length(); i++ )
+      size_t size_ = value.length();
+      for( size_t i = 0; i < size_; i++ )
         hash = ((hash << 3) + hash) + 1 + value[i];
 
       return hash;
@@ -52,15 +55,17 @@
     void Hash<T>::rehash()
     {
       std::vector<HashNode> oldArray = array;
-      
       array.resize( 2 * oldArray.size() + 1 );
-      for ( size_t i = 0; i < array.size(); i++ ) {
+
+      size_t size_ = array.size();
+      for ( size_t i = 0; i < size_; i++ ) {
         array[i].info = EMPTY;
       }
-      
+
       size = ( size * 2 ) + 1;
-      
-      for ( size_t i = 0; i < oldArray.size(); i++ ) {
+
+      size_ = oldArray.size();
+      for ( size_t i = 0; i < size_; i++ ) {
         if ( oldArray[i].info == ACTIVE ) {
           Insert( oldArray[i].element );
         }

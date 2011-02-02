@@ -8,14 +8,15 @@
 */
 bool Position::valid()
 {
+  int sized2 = size_ >> 1;
   if (row <  0)       return false;
   if (col <  0)       return false;
   if (row >= size_)   return false;
   if (col >= size_)   return false;
-  if (row <  size_/2
-   && col >  size_/2) return false;
-  if (row >  size_/2
-   && col <  size_/2) return false;
+  if (row <  sized2
+   && col >  sized2)  return false;
+  if (row >  sized2
+   && col <  sized2)  return false;
 
   return true;
 }

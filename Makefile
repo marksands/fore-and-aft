@@ -48,7 +48,7 @@ CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
 # gprof executable_name gmon.out
 
 # gcc flags + frameworks
-CFLAGS = -g -O2 -c -Wall -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
+CFLAGS = -g -O2 -c -Wall -fpermissive -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
 GLUTFLAGS = -framework GLUT -framework OpenGL
 COCOAFLAGS = -framework Cocoa
 
@@ -59,7 +59,7 @@ TEST_EXECUTABLE = test
 #CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
 
 # Include CppUnit
-CPPFLAGS = -g -O2 -c -Wall -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
+CPPFLAGS = -g -O2 -c -Wall -fpermissive -I$(PROJECT_ROOT)/include -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
 LIB = $(CPPUTEST_HOME)lib/libCppUTest.a
 
 all: clean $(TEST_EXECUTABLE) cleanup

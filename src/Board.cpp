@@ -8,21 +8,24 @@ Board::Board(const int size) : parent_(NULL), size_(size)
   board.reserve(size_);
   chargrid = "";
 
+  int sized2 = size_ >> 1;
+
   for (int i = 0; i < size; ++i)
   {
     std::vector<char> b;
     b.reserve(size_);
     for ( int j = 0; j < size; j++ )
     {
-      if      ((i <= size/2) && (j <= size/2)) { b.push_back(RED);   chargrid += RED; }
-      else if ((i >= size/2) && (j >= size/2)) { b.push_back(BLUE);  chargrid += BLUE; }
+      if      ((i <= sized2) && (j <= sized2)) { b.push_back(RED);   chargrid += RED; }
+      else if ((i >= sized2) && (j >= sized2)) { b.push_back(BLUE);  chargrid += BLUE; }
       else                                     { b.push_back(EMPTY); chargrid += EMPTY; }
     }
     board.push_back(b);
   }
-  board[size/2][size/2] = START;
-  chargrid[(size*size)/2] = START;
-  emptySlotIndex.setPosition(size/2, size/2);
+
+  board[sized2][sized2] = START;
+  chargrid[(size*size) >> 1] = START;
+  emptySlotIndex.setPosition(sized2, sized2);
 }
 
 Board Board::swap(const Position& slot, const Position& token) const
@@ -48,8 +51,11 @@ void Board::reverse()
 {
   char temp;
 
-  for ( int i = 0; i <= size_/2; i++ ) {
-    for ( int j = 0; j <= size_/2; j++ ) {
+  // divide by 2
+  int sized2 = size_ >> 1;
+
+  for ( int i = 0; i <= sized2; i++ ) {
+    for ( int j = 0; j <= sized2; j++ ) {
       temp = board[i][j];
 
       board[i][j] = board[size_-j-1][size_-i-1];
@@ -250,8 +256,15 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
     std::vector<Board> states;
     currentBoard.possibleStates(states);
 
-    for ( u_int32 i = 0; i < states.size(); i++ )
-      open.push(states[i]);
+    u_int32 num = states.size();
+    if ( 1 <= num)
+      open.push(states[0]);
+    if ( 2 <= num )
+      open.push(states[1]);
+    if ( 3 <= num )
+      open.push(states[2]);
+    if ( 4 <= num )
+      open.push(states[3]);
   }
 
   int count = 0;
