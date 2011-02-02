@@ -3,9 +3,6 @@
 // Position (a pair of row/col position on the board, or a relative position)
 // Move (a pair of Positions, one absolute position, and other a direction
 //       to move toward)
-// GameTree (a tree starting from initial PegBoard that will contain all the
-//           winning successive board positions as children, representing
-//           the next logical board position from give one)
 //
 
 #include <iostream>
@@ -21,7 +18,7 @@ using std::cin;
 
 int main(int argc, char* argv[])
 {
-  int size = 5;
+  u_int32 size;
   cout << "boardsize: ";
   cin >> size;
 
@@ -30,9 +27,6 @@ int main(int argc, char* argv[])
 
     Board goalBoard(size);
     goalBoard.reverse();
-
-    vector<Board> states;
-    GameTree root(board);
 
     if (1) {
       Timer t;

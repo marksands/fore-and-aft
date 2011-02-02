@@ -2,7 +2,6 @@
 #include <queue>
 #include <memory>
 #include "Board.hpp"
-#include "GameTree.hpp"
 
 Board::Board(const int size) : parent_(NULL), size_(size)
 {

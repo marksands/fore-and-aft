@@ -17,8 +17,6 @@ using std::setw;
 using std::cout;
 using std::endl;
 
-class GameTree;
-
 class Board {
   public:
     Board(const int size = 5);
@@ -39,7 +37,6 @@ class Board {
     std::string chargrid;
     std::vector<std::vector<char> > board;
 
-    GameTree *root_;
   private:
     char tokenForPosition(const Position& pos);
 

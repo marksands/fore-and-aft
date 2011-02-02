@@ -4,7 +4,6 @@
 
 #include "Global.hpp"
 #include "Board.hpp"
-#include "GameTree.hpp"
 #include "Move.hpp"
 #include "Position.hpp"
 #include "Timer.hpp"
