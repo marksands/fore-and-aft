@@ -45,7 +45,6 @@
     public:
     virtual ~SearchableADT() { }
 
-    virtual int LoadFromFile(std::string filename) = 0;
     virtual void clear(void) = 0;
     virtual void insertEntry(T value) = 0;
     virtual void deleteEntry(T value) = 0;
@@ -103,8 +102,6 @@
     virtual ~Hash();
       // Calls DestroyTree() to destroy the current tree.
 
-    virtual int LoadFromFile(std::string filename);
-      // loads from file
     virtual void clear(void);
       // clears tree
     virtual void insertEntry(T value);

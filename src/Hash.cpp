@@ -170,31 +170,6 @@
       //
       //***********************************
 
-
-    // loads from file
-  template <class T>
-  int Hash<T>::LoadFromFile(std::string filename)
-  {
-    int RET = 1;
-    std::ifstream fin( filename.c_str() );
-    T item;
-
-    if ( fin.fail() ) {
-      RET = 0;
-    }
-    else {
-      while ( !fin.eof() ) {
-        fin >> item;
-        insertEntry( item );
-      }
-
-      fin.clear();
-      fin.close();
-    }
-
-    return RET; 
-  }
-
     // clears tree  
   template <class T>
   void Hash<T>::clear(void)

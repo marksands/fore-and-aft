@@ -36,39 +36,19 @@ Board::Board(const Board& copy)
   parent_ = copy.parent_;
   size_ = copy.size_;
   chargrid = (char*)malloc(size_*size_+1);
-
-  board.reserve(size_);
-  for (int i = 0; i < size_; ++i)
-  {
-    std::vector<char> b;
-    b.reserve(size_);
-    for ( int j = 0; j < size_; j++ )
-    {
-      b.push_back( copy.board[i][j] );
-      chargrid[size_*i+j] = copy.board[i][j];
-    }
-    board.push_back(b);
-  }
-
+  strcpy(chargrid, copy.chargrid);
+  board = copy.board;
   emptySlotIndex = copy.emptySlotIndex;
-
-  board[emptySlotIndex.col][emptySlotIndex.row] = START;
-  chargrid[size_*emptySlotIndex.col+emptySlotIndex.row] = START;
-
-  chargrid[size_*size_] = '\0';
 }
 
 Board Board::swap(const Position& slot, const Position& token) const
 {
   Board newBoard(*this);
 
-  char temp = newBoard.board[slot.col][slot.row];
+  std::swap(newBoard.board[slot.col][slot.row], newBoard.board[token.col][token.row]);
 
-  newBoard.board[slot.col][slot.row] = newBoard.board[token.col][token.row];
-  newBoard.chargrid[size_*slot.col + slot.row] = newBoard.board[token.col][token.row];
-
-  newBoard.board[token.col][token.row] = temp;
-  newBoard.chargrid[size_*token.col + token.row] = temp;
+  newBoard.chargrid[size_*slot.col + slot.row] = newBoard.board[slot.col][slot.row];
+  newBoard.chargrid[size_*token.col + token.row] = newBoard.board[token.col][token.row];
 
     // update the emptySlotIndex, if that was a swapped tile
   if (newBoard.emptySlotIndex == slot)
@@ -278,6 +258,8 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
   {
     Board currentBoard = open.top(); open.pop();
     closed.push(currentBoard);
+
+    //std::cout << currentBoard << std::endl << std::endl;
 
     if (currentBoard == goalBoard)
       break;
