@@ -1,12 +1,13 @@
 #include <stack>
 #include <queue>
 #include <memory>
+#include <algorithm>
 #include "Board.hpp"
 
 Board::Board(const int size) : parent_(NULL), size_(size)
 {
   board.reserve(size_);
-  chargrid = "";
+  chargrid = (char*)malloc(size*size+1);
 
   int sized2 = size_ >> 1;
 
@@ -16,16 +17,45 @@ Board::Board(const int size) : parent_(NULL), size_(size)
     b.reserve(size_);
     for ( int j = 0; j < size; j++ )
     {
-      if      ((i <= sized2) && (j <= sized2)) { b.push_back(RED);   chargrid += RED; }
-      else if ((i >= sized2) && (j >= sized2)) { b.push_back(BLUE);  chargrid += BLUE; }
-      else                                     { b.push_back(EMPTY); chargrid += EMPTY; }
+      if      ((i <= sized2) && (j <= sized2)) { b.push_back(RED);   chargrid[size*i + j] = RED;   }
+      else if ((i >= sized2) && (j >= sized2)) { b.push_back(BLUE);  chargrid[size*i + j] = BLUE;  }
+      else                                     { b.push_back(EMPTY); chargrid[size*i + j] = EMPTY; }
     }
     board.push_back(b);
   }
 
   board[sized2][sized2] = START;
   chargrid[(size*size) >> 1] = START;
+  chargrid[size*size] = '\0';
+
   emptySlotIndex.setPosition(sized2, sized2);
+}
+
+Board::Board(const Board& copy)
+{
+  parent_ = copy.parent_;
+  size_ = copy.size_;
+  chargrid = (char*)malloc(size_*size_+1);
+
+  board.reserve(size_);
+  for (int i = 0; i < size_; ++i)
+  {
+    std::vector<char> b;
+    b.reserve(size_);
+    for ( int j = 0; j < size_; j++ )
+    {
+      b.push_back( copy.board[i][j] );
+      chargrid[size_*i+j] = copy.board[i][j];
+    }
+    board.push_back(b);
+  }
+
+  emptySlotIndex = copy.emptySlotIndex;
+
+  board[emptySlotIndex.col][emptySlotIndex.row] = START;
+  chargrid[size_*emptySlotIndex.col+emptySlotIndex.row] = START;
+
+  chargrid[size_*size_] = '\0';
 }
 
 Board Board::swap(const Position& slot, const Position& token) const
@@ -51,7 +81,7 @@ void Board::reverse()
 {
   char temp;
 
-  // divide by 2
+    // divide by 2
   int sized2 = size_ >> 1;
 
   for ( int i = 0; i <= sized2; i++ ) {
@@ -60,11 +90,10 @@ void Board::reverse()
 
       board[i][j] = board[size_-j-1][size_-i-1];
       board[size_-j-1][size_-i-1] = temp;
-
-      chargrid[i*size_ + j] = chargrid[size_*size_ - (i*size_+j) - 1];
-      chargrid[size_*size_ - (i*size_+j) - 1] = temp;
     }
   }
+
+  std::reverse( chargrid, &chargrid[ strlen( chargrid ) ] );
 }
 
 void Board::possibleStates(std::vector<Board>& states)
@@ -292,5 +321,5 @@ ostream& operator<<(ostream& os, const Board& b)
 
 bool operator==(const Board& lhs, const Board& rhs)
 {
-  return (bool)(lhs.chargrid == rhs.chargrid);;
+  return (bool)( 0 == strcmp(lhs.chargrid, rhs.chargrid) );
 }

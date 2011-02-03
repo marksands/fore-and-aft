@@ -25,16 +25,18 @@ TEST_GROUP(Board)
 
 };
 
+  #pragma mark TestGridPlacement
   TEST(Board, TestGridPlacement)
   {
     char fxf[] = "RRR00RRR00RRSBB00BBB00BBB";
-    STRCMP_EQUAL( boardFiv->chargrid.c_str(), fxf );
+    STRCMP_EQUAL( boardFiv->chargrid, fxf );
     char sxs[] = "RRRR000RRRR000RRRR000RRRSBBB000BBBB000BBBB000BBBB";
-    STRCMP_EQUAL( boardSev->chargrid.c_str(), sxs );
+    STRCMP_EQUAL( boardSev->chargrid, sxs );
     char nxn[] = "RRRRR0000RRRRR0000RRRRR0000RRRRR0000RRRRSBBBB0000BBBBB0000BBBBB0000BBBBB0000BBBBB";
-    STRCMP_EQUAL( boardNin->chargrid.c_str(), nxn );
+    STRCMP_EQUAL( boardNin->chargrid, nxn );
   }
 
+  #pragma mark TestSwapShouldSwapTiles
   TEST(Board, TestSwapShouldSwapTiles)
   {
     char beforeGrid[] = "RRR00RRR00RRSBB00BBB00BBB";
@@ -48,8 +50,8 @@ TEST_GROUP(Board)
 
     Board afterSwap( boardFiv->swap( Position(bCol, bRow), Position(aCol, aRow) ) );
 
-    STRCMP_EQUAL( boardFiv->chargrid.c_str(), beforeGrid );
-    STRCMP_EQUAL( afterSwap.chargrid.c_str(), afterGrid );
+    STRCMP_EQUAL( boardFiv->chargrid, beforeGrid );
+    STRCMP_EQUAL( afterSwap.chargrid, afterGrid );
 
     CHECK_EQUAL( boardFiv->board[bCol][bRow], 'S' );
     CHECK_EQUAL( boardFiv->board[aCol][aRow], 'R' );
@@ -58,10 +60,11 @@ TEST_GROUP(Board)
     CHECK_EQUAL( afterSwap.board[aCol][aRow], 'S' );
   }
 
+  #pragma mark TestNonReverseBoard
   TEST(Board, TestNonReverseBoard)
   {
     Board b(5);
-    STRCMP_EQUAL( b.chargrid.c_str(), "RRR00RRR00RRSBB00BBB00BBB");
+    STRCMP_EQUAL( b.chargrid, "RRR00RRR00RRSBB00BBB00BBB");
 
     char nonReversedGrid[5][5] = {
       {'R','R','R','0','0' },
@@ -77,12 +80,13 @@ TEST_GROUP(Board)
     }
   }
 
+  #pragma mark TestReverseBoard
   TEST(Board, TestReverseBoard)
   {
     Board b(5);
 
     b.reverse();
-    STRCMP_EQUAL( b.chargrid.c_str(), "BBB00BBB00BBSRR00RRR00RRR");
+    STRCMP_EQUAL( b.chargrid, "BBB00BBB00BBSRR00RRR00RRR");
 
     char reversedGrid[5][5] = {
       {'B','B','B','0','0' },
@@ -98,16 +102,19 @@ TEST_GROUP(Board)
     }
   }
 
+  #pragma mark TestOverloadedComparisonOperator
   TEST(Board, TestOverloadedComparisonOperator)
   {
     Board fivBoardA(5);
     Board fivBoardB(5);
-    CHECK(fivBoardA == fivBoardB);
+    CHECK( fivBoardA == fivBoardB );
+    //STRCMP_EQUAL( fivBoardA.chargrid, fivBoardB.chargrid)
 
     Board sevBoardA(7);
-    CHECK(!(fivBoardA == sevBoardA));
+    CHECK( !(fivBoardA == sevBoardA) );
   }
 
+  #pragma mark TestOverloadedOutputOperator
   TEST(Board, TestOverloadedOutputOperator)
   {
     Board b(5);
@@ -125,6 +132,7 @@ TEST_GROUP(Board)
     CHECK_EQUAL( s.str(), output );
   }
 
+  #pragma mark TestPossibleStatesAreValid
   TEST(Board, TestPossibleStatesAreValid)
   {
       // a 4-state valid case
@@ -220,5 +228,3 @@ TEST_GROUP(Board)
     CHECK( !e.validJumpToPosition(JUMPS[SOUTH], SOUTH) );
     CHECK( !e.validJumpToPosition(JUMPS[WEST], WEST) );
   }
-
-

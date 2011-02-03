@@ -36,6 +36,6 @@ int main(int argc, char* argv[])
     cout << "boardsize or 0: ";
     cin >> size;
   } while ( size != 0 );
-
+ 
   return 0;
 }

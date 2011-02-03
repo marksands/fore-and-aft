@@ -28,8 +28,7 @@
     {
       unsigned int hash = 5381;
 
-      size_t size_ = value.length();
-      for( size_t i = 0; i < size_; i++ )
+      for( size_t i = 0; value[i] != '\0'; i++ )
         hash = ((hash << 5) + hash) + value[i];
 
       return hash;
@@ -42,8 +41,7 @@
     {
       unsigned int hash = 773;
 
-      size_t size_ = value.length();
-      for( size_t i = 0; i < size_; i++ )
+      for( size_t i = 0; value[i] != '\0'; i++ )
         hash = ((hash << 3) + hash) + 1 + value[i];
 
       return hash;
@@ -98,8 +96,8 @@
       bool endfor = true;
 
       int h1 = hash(value);
-      int h2 = hash2(value);  
-        
+      int h2 = hash2(value);
+
       for ( int i = 1; endfor; i++)
       {
         int pos = abs((h1 + i*h2) % size);

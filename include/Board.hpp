@@ -20,6 +20,11 @@ using std::endl;
 class Board {
   public:
     Board(const int size = 5);
+    Board(const Board& copy);
+
+    virtual ~Board() {
+      free(chargrid);
+    }
 
     Board swap(const Position& slot, const Position& token) const;
     void reverse();
@@ -34,7 +39,7 @@ class Board {
     friend ostream& operator<<(ostream& os, const Board& b);
     friend bool operator==(const Board& lhs, const Board& rhs);
 
-    std::string chargrid;
+    char* chargrid;
     std::vector<std::vector<char> > board;
 
   private:
@@ -44,7 +49,7 @@ class Board {
 
     int size_;
     Position emptySlotIndex;
-    Hash<std::string> hash;
+    Hash<char*> hash;
 };
 
 #endif
