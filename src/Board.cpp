@@ -2,6 +2,7 @@
 #include <queue>
 #include <memory>
 #include <algorithm>
+#include <cstring>
 #include "Board.hpp"
 
 Board::Board(const int size) : parent_(NULL), size_(size)
@@ -185,7 +186,7 @@ void Board::possibleStates(std::vector<Board>& states)
 
 char Board::tokenForPosition(const Position& pos)
 {
-  return board[pos.col][pos.row];
+  return chargrid[size_*pos.col + pos.row];
 }
 
 bool Board::validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction)

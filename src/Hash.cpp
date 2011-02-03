@@ -1,3 +1,5 @@
+#include "md5.hpp"
+
 #pragma mark -
 #pragma mark Private
 
@@ -28,8 +30,12 @@
     {
       unsigned int hash = 5381;
 
-      for( size_t i = 0; value[i] != '\0'; i++ )
-        hash = ((hash << 5) + hash) + value[i];
+      //for( size_t i = 0; value[i] != '\0'; i++ )
+        //hash = ((hash << 5) + hash) + value[i];
+
+      MD5 md5;
+      hash = md5.digestString(value);
+      //std::cout << hash << std::endl;
 
       return hash;
     }
