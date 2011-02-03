@@ -7,6 +7,7 @@
 
 #include "TestPosition.hpp"
 #include "TestBoard.hpp"
+#include "TestHash.hpp"
 
 int main(int argc, char **argv) {
     return CommandLineTestRunner::RunAllTests(argc, argv);
