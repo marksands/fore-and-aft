@@ -45,7 +45,7 @@ class Board {
 
     //char* chargrid;
     std::string chargrid;
-    std::vector<std::vector<char> > board;
+    std::vector<char> board;
 
   private:
     char tokenForPosition(const Position& pos);

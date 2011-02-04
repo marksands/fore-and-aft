@@ -2,6 +2,7 @@
 #include <CppUTest/TestHarness.h>
 
 #include "Hash.hpp"
+Hash<std::string> hash;
 
 #include "Board.hpp"
 
@@ -55,11 +56,11 @@ TEST_GROUP(Board)
     STRCMP_EQUAL( boardFiv->chargrid.c_str(), beforeGrid );
     STRCMP_EQUAL( afterSwap.chargrid.c_str(), afterGrid );
 
-    CHECK_EQUAL( boardFiv->board[bCol][bRow], 'S' );
-    CHECK_EQUAL( boardFiv->board[aCol][aRow], 'R' );
+    CHECK_EQUAL( boardFiv->board[5*bCol+bRow], 'S' );
+    CHECK_EQUAL( boardFiv->board[5*aCol+aRow], 'R' );
 
-    CHECK_EQUAL( afterSwap.board[bCol][bRow], 'R' );
-    CHECK_EQUAL( afterSwap.board[aCol][aRow], 'S' );
+    CHECK_EQUAL( afterSwap.board[5*bCol+bRow], 'R' );
+    CHECK_EQUAL( afterSwap.board[5*aCol+aRow], 'S' );
   }
 
   #pragma mark TestNonReverseBoard
@@ -78,7 +79,7 @@ TEST_GROUP(Board)
 
     for ( int i = 0; i < 5; i++ ) {
       for ( int j = 0; j < 5; j++ )
-        CHECK_EQUAL( b.board[i][j], nonReversedGrid[i][j] );
+        CHECK_EQUAL( b.board[5*i+j], nonReversedGrid[i][j] );
     }
   }
 
@@ -100,7 +101,7 @@ TEST_GROUP(Board)
 
     for ( int i = 0; i < 5; i++ ) {
       for ( int j = 0; j < 5; j++ )
-        CHECK_EQUAL( b.board[i][j], reversedGrid[i][j] );
+        CHECK_EQUAL( b.board[5*i+j], reversedGrid[i][j] );
     }
   }
 
@@ -110,7 +111,7 @@ TEST_GROUP(Board)
     Board fivBoardA(5);
     Board fivBoardB(5);
 
-    Hash<std::string> hash;
+    //Hash<std::string> hash;
 
     //hash.insertEntry(fivBoardA.chargrid);
     hash.insertEntry(fivBoardB.chargrid);

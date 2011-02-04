@@ -9,45 +9,48 @@ extern Hash<std::string> hash;
 
 Board::Board(const int size) : parent_(NULL), solutionFound(false), size_(size)
 {
-  board.reserve(size_);
-  //chargrid = (char*)malloc(size*size+1);
-  chargrid.resize(size_*size_);
+  board.reserve(size*size);
+  chargrid.resize(size*size);
 
-  int sized2 = size_ >> 1;
+  int sized2 = size >> 1;
 
-  for (int i = 0; i < size; ++i)
-  {
-    std::vector<char> b;
-    b.reserve(size_);
+  for (int i = 0; i < size; ++i) {
     for ( int j = 0; j < size; j++ )
     {
-      if      ((i <= sized2) && (j <= sized2)) { b.push_back(RED);   chargrid[size*i + j] = RED;   }
-      else if ((i >= sized2) && (j >= sized2)) { b.push_back(BLUE);  chargrid[size*i + j] = BLUE;  }
-      else                                     { b.push_back(EMPTY); chargrid[size*i + j] = EMPTY; }
+      int index = size*i+j;
+      if      ((i <= sized2) && (j <= sized2)) { board[index] = RED;   chargrid[index] = RED;   }
+      else if ((i >= sized2) && (j >= sized2)) { board[index] = BLUE;  chargrid[index] = BLUE;  }
+      else                                     { board[index] = EMPTY; chargrid[index] = EMPTY; }
     }
-    board.push_back(b);
   }
 
-  board[sized2][sized2] = START;
+  board[(size*size) >> 1] = START;
   chargrid[(size*size) >> 1] = START;
-  //chargrid[size*size] = '\0';
 
   emptySlotIndex.setPosition(sized2, sized2);
 }
 
 Board::Board(const Board& copy)
 {
-  *this = copy;
+  // *this = copy;
+
+  if ( this != &copy) {
+    parent_ = copy.parent_;
+    size_ = copy.size_;
+    chargrid = copy.chargrid;
+    board = copy.board;
+    emptySlotIndex = copy.emptySlotIndex;
+  }
 }
 
 Board Board::swap(const Position& slot, const Position& token) const
 {
-  Board newBoard(*this);
+  Board newBoard = *this;
 
-  std::swap(newBoard.board[slot.col][slot.row], newBoard.board[token.col][token.row]);
+  //std::cout << newBoard << std::endl;
 
-  newBoard.chargrid[size_*slot.col + slot.row] = newBoard.board[slot.col][slot.row];
-  newBoard.chargrid[size_*token.col + token.row] = newBoard.board[token.col][token.row];
+  std::swap(newBoard.board[size_*slot.col + slot.row], newBoard.board[size_*token.col + token.row]);
+  std::swap(newBoard.chargrid[size_*slot.col + slot.row], newBoard.chargrid[size_*token.col + token.row]);
 
     // update the emptySlotIndex, if that was a swapped tile
   if (newBoard.emptySlotIndex == slot)
@@ -58,20 +61,7 @@ Board Board::swap(const Position& slot, const Position& token) const
 
 void Board::reverse()
 {
-  char temp;
-
-    // divide by 2
-  int sized2 = size_ >> 1;
-
-  for ( int i = 0; i <= sized2; i++ ) {
-    for ( int j = 0; j <= sized2; j++ ) {
-      temp = board[i][j];
-
-      board[i][j] = board[size_-j-1][size_-i-1];
-      board[size_-j-1][size_-i-1] = temp;
-    }
-  }
-
+  std::reverse( board.begin(), board.end() );
   std::reverse( chargrid.begin(), chargrid.end() );
   //std::reverse( chargrid, &chargrid[ strlen( chargrid ) ] );
 }
@@ -365,7 +355,7 @@ ostream& operator<<(ostream& os, const Board& b)
 {
   for ( int i = 0; i < b.size_; i++ ) {
     for ( int j = 0; j < b.size_; j++ )
-      os << "[" << b.board[i][j] << "]";
+      os << "[" << b.board[b.size_*i+j] << "]";
     os << "\n";
   }
   return os;
@@ -389,5 +379,10 @@ Board& Board::operator=(const Board& rhs)
     board = rhs.board;
     emptySlotIndex = rhs.emptySlotIndex;
   }
+
+  std::cout << board.size();
+  std::cout << rhs.board.size();
+  //std::cout << "Board " << *this << "\nrhsboard " << rhs << "\n";
+
   return *this;
 }
