@@ -23,7 +23,7 @@ class Board {
     Board(const Board& copy);
 
     virtual ~Board() {
-      free(chargrid);
+      //free(chargrid);
     }
 
     Board swap(const Position& slot, const Position& token) const;
@@ -31,7 +31,9 @@ class Board {
 
     void possibleStates(std::vector<Board>& states);
 
-    void dfs(const Board& currentState, const Board& goalBoard);
+    //void dfs(const Board& currentState, const Board& goalBoard);
+    void dfs(Board& currentState, const Board& goalBoard);
+    void bfs(const Board& currentState, const Board& goalBoard);
 
     bool validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
     bool validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
@@ -39,7 +41,10 @@ class Board {
     friend ostream& operator<<(ostream& os, const Board& b);
     friend bool operator==(const Board& lhs, const Board& rhs);
 
-    char* chargrid;
+    Board& operator=(const Board& rhs);
+
+    //char* chargrid;
+    std::string chargrid;
     std::vector<std::vector<char> > board;
 
   private:
@@ -47,9 +52,9 @@ class Board {
 
     Board *parent_;
 
+    bool solutionFound;
     int size_;
     Position emptySlotIndex;
-    Hash<char*> hash;
 };
 
 #endif

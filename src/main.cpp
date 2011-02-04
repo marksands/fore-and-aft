@@ -11,6 +11,9 @@
 #include <vector>
 #include <list>
 
+#include "Hash.hpp"
+Hash<std::string> hash;
+
 #include "../include/ForeAft.hpp"
 
 using std::vector;
@@ -31,7 +34,10 @@ int main(int argc, char* argv[])
     if (1) {
       Timer t;
       board.dfs(board, goalBoard);
+      //board.bfs(board, goalBoard);
     }
+
+    hash.clear();
 
     cout << "boardsize or 0: ";
     cin >> size;

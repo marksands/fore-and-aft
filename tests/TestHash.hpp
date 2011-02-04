@@ -23,8 +23,10 @@ TEST_GROUP(Hash)
   {
     Board board(5);
 
-    Hash<char*> hash;
-    hash.insertEntry(const_cast<char*>("RRR00RRR00RSB00BBB00BBB"));
+    Hash<std::string> hash;
+    //hash.insertEntry(const_cast<char*>("RRR00RRR00RSB00BBB00BBB"));
+    hash.insertEntry("RRR00RRR00RSB00BBB00BBB");
 
-    CHECK( hash.isThere(const_cast<char*>("RRR00RRR00RSB00BBB00BBB")) );
+    //CHECK( hash.isThere(const_cast<char*>("RRR00RRR00RSB00BBB00BBB")) );
+    CHECK( hash.isThere("RRR00RRR00RSB00BBB00BBB") );
   }

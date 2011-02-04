@@ -73,8 +73,8 @@
       EntryType info;
 
       HashNode( const T& e = T(), EntryType i = EMPTY ) : element(e), info(i)
-      { }
-    };  
+        { }
+    };
 
       // vector array of HashNode
     std::vector<HashNode> array; 

@@ -1,4 +1,4 @@
-#include "md5.hpp"
+//#include "md5.hpp"
 
 #pragma mark -
 #pragma mark Private
@@ -30,11 +30,11 @@
     {
       unsigned int hash = 5381;
 
-      //for( size_t i = 0; value[i] != '\0'; i++ )
-        //hash = ((hash << 5) + hash) + value[i];
+      for( size_t i = 0; value[i] != '\0'; i++ )
+        hash = ((hash << 5) + hash) + value[i];
 
-      MD5 md5;
-      hash = md5.digestString(value);
+      //MD5 md5;
+      //hash *= (unsigned int)(md5.digestString(value));
       //std::cout << hash << std::endl;
 
       return hash;
@@ -74,7 +74,7 @@
           Insert( oldArray[i].element );
         }
       }
-      
+
     }
 
 #pragma mark -
@@ -97,14 +97,11 @@
           rehash();
 
       HashNode newNode(value, ACTIVE);
-        
-      bool flag = false;
-      bool endfor = true;
 
       int h1 = hash(value);
       int h2 = hash2(value);
 
-      for ( int i = 1; endfor; i++)
+      for ( int i = 1; ; i++)
       {
         int pos = abs((h1 + i*h2) % size);
 
@@ -112,15 +109,13 @@
         {
           array[ pos ] = newNode;
           numberOfItems++;
-          endfor = false;
-          flag = true;
+          return true;
         } else if ( array[ pos ].element == newNode.element ) {
-          endfor = false;
-          flag = true;
+          return false;
         }
       }
-            
-      return ( flag );
+
+      return false;
     }
 
       // removes a value from the hash table
@@ -176,7 +171,7 @@
       //
       //***********************************
 
-    // clears tree  
+    // clears tree
   template <class T>
   void Hash<T>::clear(void)
   {
@@ -213,11 +208,12 @@
 
       if ( !IsActive( pos ) )
         return false;
-      else if ( array[ pos ].element == value && array[ pos ].info == ACTIVE )
+      else if ( array[pos].element == value && array[pos].info == ACTIVE )
         return true;
+      //else if ( array[ pos ].element == value && array[ pos ].info == ACTIVE )
     }
   }
-  
+
     // checks if v1 and v2 have the same hash
   template <class T>
   bool Hash<T>::equalHash(T check, T goal)
@@ -227,23 +223,14 @@
     int h1 = hash(check);
     int h2 = hash2(check);
 
-    int h3 = hash(goal);
-    int h4 = hash(goal);
-
     for ( int i = 1; ; i++) {
-      int posChek = abs( (h1 + (i*h2)) % size );
-      int posGoal = abs( (h3 + (i*h4)) % size );
+      int pos = abs( (h1 + (i*h2)) % size );
 
-      if ( !IsActive( posGoal ) ) {
+      if ( !IsActive( pos ) ) {
         return false;
       }
-      else if ( array[ posGoal ].element == goal && array[ posGoal ].info == ACTIVE ) {
-        if ( posGoal == posChek ) {
-          return true;
-        }
-        else {
-          return false;
-        }
+      else if ( array[pos].element == goal && array[pos].info == ACTIVE ) {
+        return true;
       }
     }
     return false;

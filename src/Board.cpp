@@ -5,10 +5,13 @@
 #include <cstring>
 #include "Board.hpp"
 
-Board::Board(const int size) : parent_(NULL), size_(size)
+extern Hash<std::string> hash;
+
+Board::Board(const int size) : parent_(NULL), solutionFound(false), size_(size)
 {
   board.reserve(size_);
-  chargrid = (char*)malloc(size*size+1);
+  //chargrid = (char*)malloc(size*size+1);
+  chargrid.resize(size_*size_);
 
   int sized2 = size_ >> 1;
 
@@ -27,19 +30,14 @@ Board::Board(const int size) : parent_(NULL), size_(size)
 
   board[sized2][sized2] = START;
   chargrid[(size*size) >> 1] = START;
-  chargrid[size*size] = '\0';
+  //chargrid[size*size] = '\0';
 
   emptySlotIndex.setPosition(sized2, sized2);
 }
 
 Board::Board(const Board& copy)
 {
-  parent_ = copy.parent_;
-  size_ = copy.size_;
-  chargrid = (char*)malloc(size_*size_+1);
-  strcpy(chargrid, copy.chargrid);
-  board = copy.board;
-  emptySlotIndex = copy.emptySlotIndex;
+  *this = copy;
 }
 
 Board Board::swap(const Position& slot, const Position& token) const
@@ -74,7 +72,8 @@ void Board::reverse()
     }
   }
 
-  std::reverse( chargrid, &chargrid[ strlen( chargrid ) ] );
+  std::reverse( chargrid.begin(), chargrid.end() );
+  //std::reverse( chargrid, &chargrid[ strlen( chargrid ) ] );
 }
 
 void Board::possibleStates(std::vector<Board>& states)
@@ -247,7 +246,36 @@ bool Board::validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS directi
   return true;
 }
 
-// this is still not finding the direct path HOW TO DO?! ;_;
+void Board::dfs(Board& currentState, const Board& goalBoard)
+{
+  if ( !(currentState == goalBoard) )
+  {
+    if ( solutionFound ) return;
+
+    std::vector<Board> states;
+    currentState.possibleStates(states);
+
+    for ( int i = 0; i < states.size(); i++ )
+      dfs( states[i], goalBoard );
+    return;
+  }
+  else {
+    solutionFound = true;
+    int count = 0;
+    Board node = currentState;
+    while( node.parent_ != NULL )
+    {
+      count++;
+      std::cout << node << std::endl;
+      node = *node.parent_;
+    }
+
+    std::cout << std::setw(3) << "";
+    std::cout << "Total nodes: " << count << std::endl;
+  }
+}
+
+/*
 void Board::dfs(const Board& currentState, const Board& goalBoard)
 {
   std::stack<Board> open;
@@ -260,27 +288,68 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
     Board currentBoard = open.top(); open.pop();
     closed.push(currentBoard);
 
+    std::cout << currentBoard.chargrid << "\n"
+              << goalBoard.chargrid << "\n\n";
     //std::cout << currentBoard << std::endl << std::endl;
 
     if (currentBoard == goalBoard)
       break;
 
-    std::vector<Board> states;
-    currentBoard.possibleStates(states);
+      // trying the heap instead, even though stack allocation is faster
+    std::vector<Board>* states = new std::vector<Board>; // std::vector<Board> states;
+    currentBoard.possibleStates(*states);
 
-    u_int32 num = states.size();
-    if ( 1 <= num)
-      open.push(states[0]);
-    if ( 2 <= num )
-      open.push(states[1]);
-    if ( 3 <= num )
-      open.push(states[2]);
-    if ( 4 <= num )
-      open.push(states[3]);
+    u_int32 states_size = states->size();
+    for ( u_int32 i = 0; i < states_size; i++ )
+      open.push(states->operator[](i));
+
+    delete states;
   }
 
   int count = 0;
   Board node = closed.top();
+
+  while( node.parent_ != NULL )
+  {
+    count++;
+    std::cout << node << std::endl;
+    node = *node.parent_;
+  }
+
+  std::cout << std::setw(3) << "";
+  std::cout << "Total nodes: " << count << std::endl;
+}
+*/
+
+void Board::bfs(const Board& currentState, const Board& goalBoard)
+{
+  std::queue<Board> open;
+  open.push(currentState);
+
+  while ( !open.empty() )
+  {
+    Board currentBoard( open.front() );
+
+    std::cout << currentBoard << "\n\n";
+
+    if (currentBoard == goalBoard)
+      break;
+
+     open.pop();
+
+      // trying the heap instead, even though stack allocation is faster
+    std::vector<Board>* states = new std::vector<Board>; // std::vector<Board> states;
+    currentBoard.possibleStates(*states);
+
+    u_int32 states_size = states->size();
+    for ( u_int32 i = 0; i < states_size; i++ )
+      open.push(states->operator[](i));
+
+    delete states;
+  }
+
+  int count = 0;
+  Board node( open.front() );
   while( node.parent_ != NULL )
   {
     count++;
@@ -304,5 +373,21 @@ ostream& operator<<(ostream& os, const Board& b)
 
 bool operator==(const Board& lhs, const Board& rhs)
 {
-  return (bool)( 0 == strcmp(lhs.chargrid, rhs.chargrid) );
+  return hash.equalHash(lhs.chargrid, rhs.chargrid);
+  //return (bool)( 0 == strcmp(lhs.chargrid, rhs.chargrid) );
+}
+
+Board& Board::operator=(const Board& rhs)
+{
+  if ( this != &rhs) {
+    parent_ = rhs.parent_;
+    size_ = rhs.size_;
+    //free(chargrid);
+    //chargrid = (char*)malloc(size_*size_+1);
+    //strcpy(chargrid, rhs.chargrid);
+    chargrid = rhs.chargrid;
+    board = rhs.board;
+    emptySlotIndex = rhs.emptySlotIndex;
+  }
+  return *this;
 }
