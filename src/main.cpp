@@ -33,8 +33,8 @@ int main(int argc, char* argv[])
 
     if (1) {
       Timer t;
-      board.dfs(board, goalBoard);
-      //board.bfs(board, goalBoard);
+      //board.dfs(board, goalBoard);
+      board.bfs(board, goalBoard);
     }
 
     hash.clear();

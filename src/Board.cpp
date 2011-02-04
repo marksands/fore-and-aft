@@ -10,17 +10,16 @@ extern Hash<std::string> hash;
 Board::Board(const int size) : parent_(NULL), solutionFound(false), size_(size)
 {
   board.reserve(size*size);
-  chargrid.resize(size*size);
+  chargrid = "";
 
   int sized2 = size >> 1;
 
   for (int i = 0; i < size; ++i) {
     for ( int j = 0; j < size; j++ )
     {
-      int index = size*i+j;
-      if      ((i <= sized2) && (j <= sized2)) { board[index] = RED;   chargrid[index] = RED;   }
-      else if ((i >= sized2) && (j >= sized2)) { board[index] = BLUE;  chargrid[index] = BLUE;  }
-      else                                     { board[index] = EMPTY; chargrid[index] = EMPTY; }
+      if      ((i <= sized2) && (j <= sized2)) { board.push_back(RED);   chargrid += RED;   }
+      else if ((i >= sized2) && (j >= sized2)) { board.push_back(BLUE);  chargrid += BLUE;  }
+      else                                     { board.push_back(EMPTY); chargrid += EMPTY; }
     }
   }
 
@@ -63,7 +62,6 @@ void Board::reverse()
 {
   std::reverse( board.begin(), board.end() );
   std::reverse( chargrid.begin(), chargrid.end() );
-  //std::reverse( chargrid, &chargrid[ strlen( chargrid ) ] );
 }
 
 void Board::possibleStates(std::vector<Board>& states)
@@ -364,7 +362,6 @@ ostream& operator<<(ostream& os, const Board& b)
 bool operator==(const Board& lhs, const Board& rhs)
 {
   return hash.equalHash(lhs.chargrid, rhs.chargrid);
-  //return (bool)( 0 == strcmp(lhs.chargrid, rhs.chargrid) );
 }
 
 Board& Board::operator=(const Board& rhs)
@@ -372,17 +369,10 @@ Board& Board::operator=(const Board& rhs)
   if ( this != &rhs) {
     parent_ = rhs.parent_;
     size_ = rhs.size_;
-    //free(chargrid);
-    //chargrid = (char*)malloc(size_*size_+1);
-    //strcpy(chargrid, rhs.chargrid);
     chargrid = rhs.chargrid;
     board = rhs.board;
     emptySlotIndex = rhs.emptySlotIndex;
   }
-
-  std::cout << board.size();
-  std::cout << rhs.board.size();
-  //std::cout << "Board " << *this << "\nrhsboard " << rhs << "\n";
 
   return *this;
 }
