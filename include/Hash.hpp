@@ -27,8 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HASH_H
-#define HASH_H
+#ifndef HASH_HPP
+#define HASH_HPP
 
 #include <string>
 #include <vector>

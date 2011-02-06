@@ -7,6 +7,8 @@
 void dfs(const Board& currentState, const Board& goalBoard);
   // performs a breadth first search on the board
 void bfs(const Board& currentState, const Board& goalBoard);
+  // performs a hueristic serach on the board
+void heuristic(const Board& currentState, const Board& goalBoard);
 
 
 /*
@@ -121,3 +123,10 @@ void bfs(const Board& currentState, const Board& goalBoard)
   std::cout << std::setw(3) << "";
   std::cout << "Total nodes: " << count << std::endl;
 }
+
+void heuristic(const Board& currentState, const Board& goalBoard)
+{
+  
+}
+
+

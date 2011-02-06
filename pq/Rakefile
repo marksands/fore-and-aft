@@ -1,0 +1,46 @@
+require 'rake/clean'
+
+PROG = "PriorityQueue" 
+LIBNAME = PROG
+LIBDIR = 'lib'
+OBJDIR = 'obj'
+LIBFILE = "#{LIBDIR}/#{LIBNAME}.a"
+GLUTFLAGS="-framework GLUT -framework OpenGL"
+COCOAFLAGS="-framework Cocoa"
+
+SRC = FileList['main.cc','PQueue.cpp', 'Hash.cpp', 'Heap.cpp']
+
+OBJ = SRC.collect { |fn| File.join(OBJDIR, File.basename(fn).ext('o')) }
+
+CLEAN.include(OBJ, OBJDIR, LIBFILE, LIBDIR)
+CLOBBER.include(PROG)
+
+task :default => [:config, :build, :run]
+
+task :config => [LIBDIR, OBJDIR]
+
+task :build => [PROG]
+
+task :run => [PROG] do
+  system "./#{PROG}"
+end
+
+directory LIBDIR
+
+file PROG => [LIBFILE] do
+  sh "g++ -o #{PROG} -Wall #{LIBFILE} #{GLUTFLAGS} #{COCOAFLAGS}"
+end
+
+file LIBFILE => OBJ do
+  sh "ar cr #{LIBFILE} #{OBJ}"
+  sh "ranlib #{LIBFILE}" 
+end
+
+directory OBJDIR
+
+SRC.each do |srcfile|
+  objfile = File.join(OBJDIR, File.basename(srcfile).ext('o'))
+  file objfile => [srcfile, OBJDIR] do
+    sh "g++ -c -o #{objfile} #{srcfile}"
+  end
+end
