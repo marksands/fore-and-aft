@@ -44,6 +44,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <vector>
+#include <stack>
 #include <list>
 
 #include "Hash.hpp"
@@ -176,7 +177,7 @@ void DepthFirstSearch( Board*& board )
 {
   Timer t;
   Board goalBoard(board->getSize()); goalBoard.reverse();
-  board->dfs( *board, goalBoard );
+  dfs( *board, goalBoard );
   delete board;
 }
 
@@ -191,7 +192,7 @@ void BreadthFirstSearch( Board*& board )
 {
   Timer t;
   Board goalBoard(board->getSize()); goalBoard.reverse();
-  board->bfs( *board, goalBoard );
+  bfs( *board, goalBoard );
   delete board;
 }
 

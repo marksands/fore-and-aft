@@ -6,5 +6,7 @@
 #include "Board.hpp"
 #include "Position.hpp"
 #include "Timer.hpp"
+#include "Stack.h"
+#include "Search.hpp"
 
 #endif

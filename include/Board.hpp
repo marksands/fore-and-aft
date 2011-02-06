@@ -38,11 +38,6 @@ class Board {
       // populates a vector<Board> with all possible neighbors of the board's current state
     void possibleStates(std::vector<Board>& states);
 
-      // performs a depth first search on the board
-    void dfs(const Board& currentState, const Board& goalBoard);
-      // performs a breadth first search on the board
-    void bfs(const Board& currentState, const Board& goalBoard);
-
       // validates the move from Position pos to a given Cardinal Direction
     bool validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
       // validates the jump from Position pos to a given Cardinal Direction
@@ -59,11 +54,10 @@ class Board {
     std::string chargrid;
     std::vector<char> board;
 
+    Board *parent_;
   private:
       // returns the character at the position on the board
     char tokenForPosition(const Position& pos);
-
-    Board *parent_;
 
     bool solutionFound;
     u_int32 size_;
