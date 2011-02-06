@@ -17,43 +17,56 @@ using std::setw;
 using std::cout;
 using std::endl;
 
+  //------------------------------------------------------------------------------------
+  // Class: Board
+  // Board stores the grid of the playing field
+  //------------------------------------------------------------------------------------
 class Board {
   public:
-    Board(const int size = 5);
+    Board(const u_int32 size = 5);
     Board(const Board& copy);
 
-    virtual ~Board() {
-      //free(chargrid);
-    }
+    virtual ~Board() { }
 
+      // returns a new board with slot and token positions switched
     Board swap(const Position& slot, const Position& token) const;
+      // reveresed the board
     void reverse();
+      // returns the size of the board
+    u_int32 getSize() { return size_; }
 
+      // populates a vector<Board> with all possible neighbors of the board's current state
     void possibleStates(std::vector<Board>& states);
 
-    //void dfs(const Board& currentState, const Board& goalBoard);
-    void dfs(Board& currentState, const Board& goalBoard);
+      // performs a depth first search on the board
+    void dfs(const Board& currentState, const Board& goalBoard);
+      // performs a breadth first search on the board
     void bfs(const Board& currentState, const Board& goalBoard);
 
+      // validates the move from Position pos to a given Cardinal Direction
     bool validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
+      // validates the jump from Position pos to a given Cardinal Direction
     bool validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
 
+      // overloaded output operator pru_int32s the board
     friend ostream& operator<<(ostream& os, const Board& b);
+      // overloaded comparison operator returns if Board lhs is equal to Board rhs
     friend bool operator==(const Board& lhs, const Board& rhs);
 
+      // overloaded assignment operator copies one board to another
     Board& operator=(const Board& rhs);
 
-    //char* chargrid;
     std::string chargrid;
     std::vector<char> board;
 
   private:
+      // returns the character at the position on the board
     char tokenForPosition(const Position& pos);
 
     Board *parent_;
 
     bool solutionFound;
-    int size_;
+    u_int32 size_;
     Position emptySlotIndex;
 };
 

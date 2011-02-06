@@ -3,8 +3,8 @@
 /*
 * @method
 *   Position::valid() - validations the position of the token
-* Author: Mark Sands
-* Date modified: 1-25-11
+*   Author: Mark Sands
+*   Date modified: 1-25-11
 */
 bool Position::valid()
 {
@@ -24,8 +24,8 @@ bool Position::valid()
 /*
 * @method
 *   Position::move() - move the token to the given postition
-* Author: Mark Sands
-* Date modified: 1-25-11
+*   Author: Mark Sands
+*   Date modified: 1-25-11
 */
 bool Position::move(const Position& pos)
 {
@@ -44,8 +44,8 @@ bool Position::move(const Position& pos)
 /*
 * @method
 *   Position::canMoveTo() - return true if the token can move to the new position
-* Author: Mark Sands
-* Date modified: 1-26-11
+*   Author: Mark Sands
+*   Date modified: 1-26-11
 */
 bool Position::canMoveTo(const Position& pos)
 {
@@ -62,8 +62,8 @@ bool Position::canMoveTo(const Position& pos)
 /*
 * @method
 *   Position::operator+=() - Increments the position by addition, returns the position
-* Author: Mark Sands
-* Date modified: 1-25-11
+*   Author: Mark Sands
+*   Date modified: 1-25-11
 */
 Position& Position::operator+=(const Position& pos)
 {

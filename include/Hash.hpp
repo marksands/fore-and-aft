@@ -21,7 +21,7 @@
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * u_int32ERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
@@ -37,6 +37,8 @@
 #include <cmath>
 #include <fstream>
 
+typedef unsigned long int u_int32;
+
   //---------------------------------------------------------------------------------------------------
   // Abstract Class: SearchableADT
   //---------------------------------------------------------------------------------------------------
@@ -49,7 +51,7 @@
     virtual void insertEntry(T value) = 0;
     virtual void deleteEntry(T value) = 0;
     virtual bool isThere(T value) = 0;
-    virtual int numEntries(void) = 0; 
+    virtual u_int32 numEntries(void) = 0; 
   };
 
   //---------------------------------------------------------------------------------------------------
@@ -60,9 +62,9 @@
   {
   private:
 
-    int size;
+    u_int32 size;
       // holds curent size;
-    int numberOfItems;
+    u_int32 numberOfItems;
       //holds mumber of items
 
     enum EntryType { ACTIVE, EMPTY, DELETED };
@@ -79,11 +81,11 @@
       // vector array of HashNode
     std::vector<HashNode> array; 
 
-    virtual int hash(T value) const;
+    virtual u_int32 hash(T value) const;
       // finds the hashvalue of the item : 1st hash
-    virtual int hash2(T value) const;
+    virtual u_int32 hash2(T value) const;
       // finds the hashvalue of the item : 2nd hash
-    virtual bool IsActive(int pos) const; 
+    virtual bool IsActive(u_int32 pos) const; 
       // returns true if the position is occupied 
 
     virtual void rehash();
@@ -92,12 +94,12 @@
     void Empty();
       // erases the hash table
     bool Insert( const T& value );
-      // inserts value into the hash table
+      // inserts value u_int32o the hash table
     bool Remove( const T& value );
       // removes a value from the hash table
 
   public:
-    Hash( int size = 101 );
+    Hash( u_int32 size = 101 );
       // Sets the root to NULL;
     virtual ~Hash();
       // Calls DestroyTree() to destroy the current tree.
@@ -110,7 +112,7 @@
       // deletes entry 'value'
     virtual bool isThere(T value);
       // boolean is there?
-    virtual int numEntries(void); 
+    virtual u_int32 numEntries(void); 
       // number of entries
 
     virtual bool equalHash(T check, T goal);

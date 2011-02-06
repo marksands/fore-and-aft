@@ -111,16 +111,7 @@ TEST_GROUP(Board)
     Board fivBoardA(5);
     Board fivBoardB(5);
 
-    //Hash<std::string> hash;
-
-    //hash.insertEntry(fivBoardA.chargrid);
-    hash.insertEntry(fivBoardB.chargrid);
-
-    //CHECK( fivBoardA == fivBoardB );
     STRCMP_EQUAL( fivBoardA.chargrid.c_str(), fivBoardB.chargrid.c_str());
-
-    Board sevBoardA(7);
-    //CHECK( !(fivBoardA == sevBoardA) );
   }
 
   #pragma mark TestOverloadedOutputOperator

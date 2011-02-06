@@ -7,15 +7,21 @@
 
 extern Hash<std::string> hash;
 
-Board::Board(const int size) : parent_(NULL), solutionFound(false), size_(size)
+/*
+* @method
+*   Board::Board() - Constructor initializes the board
+*   Author: Mark Sands
+*   Date modified: 2-3-11
+*/
+Board::Board(const u_int32 size) : parent_(NULL), solutionFound(false), size_(size)
 {
   board.reserve(size*size);
   chargrid = "";
 
-  int sized2 = size >> 1;
+  u_int32 sized2 = size >> 1;
 
-  for (int i = 0; i < size; ++i) {
-    for ( int j = 0; j < size; j++ )
+  for (u_int32 i = 0; i < size; ++i) {
+    for ( u_int32 j = 0; j < size; j++ )
     {
       if      ((i <= sized2) && (j <= sized2)) { board.push_back(RED);   chargrid += RED;   }
       else if ((i >= sized2) && (j >= sized2)) { board.push_back(BLUE);  chargrid += BLUE;  }
@@ -29,10 +35,14 @@ Board::Board(const int size) : parent_(NULL), solutionFound(false), size_(size)
   emptySlotIndex.setPosition(sized2, sized2);
 }
 
+/*
+* @method
+*   Board::Board() - Copy Constructor copies the board
+*   Author: Mark Sands
+*   Date modified: 2-3-11
+*/
 Board::Board(const Board& copy)
 {
-  // *this = copy;
-
   if ( this != &copy) {
     parent_ = copy.parent_;
     size_ = copy.size_;
@@ -42,11 +52,17 @@ Board::Board(const Board& copy)
   }
 }
 
+
+/*
+* @method
+*   Board Board::swap(Position slot, Position token)
+*     - returns a new board with slot and token positions switched
+*   Author: Mark Sands
+*   Date modified: 2-3-11
+*/
 Board Board::swap(const Position& slot, const Position& token) const
 {
   Board newBoard = *this;
-
-  //std::cout << newBoard << std::endl;
 
   std::swap(newBoard.board[size_*slot.col + slot.row], newBoard.board[size_*token.col + token.row]);
   std::swap(newBoard.chargrid[size_*slot.col + slot.row], newBoard.chargrid[size_*token.col + token.row]);
@@ -58,17 +74,30 @@ Board Board::swap(const Position& slot, const Position& token) const
   return newBoard;
 }
 
+/*
+* @method
+*   void Board::reverse() - reverses the board
+*   Author: Mark Sands
+*   Date modified: 2-2-11
+*/
 void Board::reverse()
 {
   std::reverse( board.begin(), board.end() );
   std::reverse( chargrid.begin(), chargrid.end() );
 }
 
+/*
+* @method
+*   void Board::possibleStates(vector<Board> states)
+*     - populates a vector<Board> with all possible neighbors of the board's current state
+*   Author: Mark Sands
+*   Date modified: 2-1-11
+*/
 void Board::possibleStates(std::vector<Board>& states)
 {
   states.clear();
 
-  int maxJumps = 4;
+  u_int32 maxJumps = 4;
 
     /** One Tile Moves **/
 
@@ -171,11 +200,25 @@ void Board::possibleStates(std::vector<Board>& states)
 
 }
 
+/*
+* @method
+*   char Board::tokenForPosition(Position pos)
+*     - returns the character at the position on the board
+*   Author: Mark Sands
+*   Date modified: 1-25-11
+*/
 char Board::tokenForPosition(const Position& pos)
 {
   return chargrid[size_*pos.col + pos.row];
 }
 
+/*
+* @method
+*   bool Board::validMoveToPosition(Position pos, CARDINAL_DIRECTIONS direction)
+*     - validates the move from Position pos to a given Cardinal Direction
+*   Author: Mark Sands
+*   Date modified: 1-25-11
+*/
 bool Board::validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction)
 {
   Position newPosition(emptySlotIndex);
@@ -197,6 +240,13 @@ bool Board::validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS directi
   return true;
 }
 
+/*
+* @method
+*   bool Board::validJumpToPosition(Position pos, CARDINAL_DIRECTIONS direction)
+*     - validates the jump from Position pos to a given Cardinal Direction
+*   Author: Mark Sands
+*   Date modified: 1-25-11
+*/
 bool Board::validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS direction)
 {
   Position newPosition(emptySlotIndex);
@@ -234,6 +284,14 @@ bool Board::validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS directi
   return true;
 }
 
+#if 0
+/*
+* @method
+*   void Board::dfs(Board currentState, Board goalBoard)
+*     - performs a recursive depth first search on the board
+*   Author: Mark Sands
+*   Date modified: 2-4-11
+*/
 void Board::dfs(Board& currentState, const Board& goalBoard)
 {
   if ( !(currentState == goalBoard) )
@@ -243,13 +301,18 @@ void Board::dfs(Board& currentState, const Board& goalBoard)
     std::vector<Board> states;
     currentState.possibleStates(states);
 
-    for ( int i = 0; i < states.size(); i++ )
+    for ( u_int32 i = 0; i < states.size(); i++ )
       dfs( states[i], goalBoard );
     return;
   }
   else {
+ 
+   /**********************/
+   /* Print the solution */
+   /**********************/
+
     solutionFound = true;
-    int count = 0;
+    u_int32 count = 0;
     Board node = currentState;
     while( node.parent_ != NULL )
     {
@@ -262,8 +325,15 @@ void Board::dfs(Board& currentState, const Board& goalBoard)
     std::cout << "Total nodes: " << count << std::endl;
   }
 }
+#endif
 
 /*
+* @method
+*   void Board::dfs(Board currentState, Board goalBoard)
+*     - performs a depth first search on the board
+*   Author: Mark Sands
+*   Date modified: 2-4-11
+*/
 void Board::dfs(const Board& currentState, const Board& goalBoard)
 {
   std::stack<Board> open;
@@ -271,14 +341,12 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
 
   std::stack<Board> closed;
 
+  u_int32 expanded = 0;
+
   while ( !open.empty() )
   {
     Board currentBoard = open.top(); open.pop();
     closed.push(currentBoard);
-
-    std::cout << currentBoard.chargrid << "\n"
-              << goalBoard.chargrid << "\n\n";
-    //std::cout << currentBoard << std::endl << std::endl;
 
     if (currentBoard == goalBoard)
       break;
@@ -288,13 +356,19 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
     currentBoard.possibleStates(*states);
 
     u_int32 states_size = states->size();
-    for ( u_int32 i = 0; i < states_size; i++ )
+    for ( u_int32 i = 0; i < states_size; i++ ) {
+      expanded++;
       open.push(states->operator[](i));
+    }
 
     delete states;
   }
 
-  int count = 0;
+  /**********************/
+  /* Print the solution */
+  /**********************/
+
+  u_int32 count = 0;
   Board node = closed.top();
 
   while( node.parent_ != NULL )
@@ -305,20 +379,29 @@ void Board::dfs(const Board& currentState, const Board& goalBoard)
   }
 
   std::cout << std::setw(3) << "";
+  std::cout << "Total nodes expanded: " << expanded << std::endl;
+  std::cout << std::setw(3) << "";
   std::cout << "Total nodes: " << count << std::endl;
+  
 }
-*/
 
+/*
+* @method
+*   void Board::bfs(Board currentState, Board goalBoard)
+*     - performs a breadth first search on the board
+*   Author: Mark Sands
+*   Date modified: 2-4-11
+*/
 void Board::bfs(const Board& currentState, const Board& goalBoard)
 {
   std::queue<Board> open;
   open.push(currentState);
 
+  u_int32 expanded = 0;
+
   while ( !open.empty() )
   {
     Board currentBoard( open.front() );
-
-    std::cout << currentBoard << "\n\n";
 
     if (currentBoard == goalBoard)
       break;
@@ -330,13 +413,19 @@ void Board::bfs(const Board& currentState, const Board& goalBoard)
     currentBoard.possibleStates(*states);
 
     u_int32 states_size = states->size();
-    for ( u_int32 i = 0; i < states_size; i++ )
+    for ( u_int32 i = 0; i < states_size; i++ ) {
+      expanded++;
       open.push(states->operator[](i));
+    }
 
     delete states;
   }
 
-  int count = 0;
+  /**********************/
+  /* Print the solution */
+  /**********************/
+
+  u_int32 count = 0;
   Board node( open.front() );
   while( node.parent_ != NULL )
   {
@@ -346,24 +435,47 @@ void Board::bfs(const Board& currentState, const Board& goalBoard)
   }
 
   std::cout << std::setw(3) << "";
+  std::cout << "Total nodes expanded: " << expanded << std::endl;
+  std::cout << std::setw(3) << "";
   std::cout << "Total nodes: " << count << std::endl;
 }
 
+/*
+* @method
+*   ostream& operator<<(ostream& os, const Board& b)
+*     - overloaded output operator pru_int32s the board
+*   Author: Mark Sands
+*   Date modified: 1-25-11
+*/
 ostream& operator<<(ostream& os, const Board& b)
 {
-  for ( int i = 0; i < b.size_; i++ ) {
-    for ( int j = 0; j < b.size_; j++ )
-      os << "[" << b.board[b.size_*i+j] << "]";
+  for ( u_int32 i = 0; i < b.size_; i++ ) {
+    for ( u_int32 j = 0; j < b.size_; j++ )
+      os << "" << b.board[b.size_*i+j] << " ";
     os << "\n";
   }
   return os;
 }
 
+/*
+* @method
+*   bool operator==(const Board& lhs, const Board& rhs)
+*     - overloaded comparison operator returns if Board lhs is equal to Board rhs
+*   Author: Mark Sands
+*   Date modified: 1-29-11
+*/
 bool operator==(const Board& lhs, const Board& rhs)
 {
   return hash.equalHash(lhs.chargrid, rhs.chargrid);
 }
 
+/*
+* @method
+*   Board& Board::operator=(const Board& rhs)
+*     - overloaded assignment operator copies one board to another
+*   Author: Mark Sands
+*   Date modified: 1-25-11
+*/
 Board& Board::operator=(const Board& rhs)
 {
   if ( this != &rhs) {

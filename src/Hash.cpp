@@ -26,16 +26,12 @@
 
       // finds the hashvalue of the item : 1st hash
     template <class T>
-    int Hash<T>::hash( T value ) const
+    u_int32 Hash<T>::hash( T value ) const
     {
-      unsigned int hash = 5381;
+      u_int32 hash = 5381;
 
       for( size_t i = 0; value[i] != '\0'; i++ )
         hash = ((hash << 5) + hash) + value[i];
-
-      //MD5 md5;
-      //hash *= (unsigned int)(md5.digestString(value));
-      //std::cout << hash << std::endl;
 
       return hash;
     }
@@ -43,9 +39,9 @@
 
       // finds the hashvalue of the item  : 2nd hash
     template <class T>
-    int Hash<T>::hash2( T value ) const
+    u_int32 Hash<T>::hash2( T value ) const
     {
-      unsigned int hash = 773;
+      u_int32 hash = 773;
 
       for( size_t i = 0; value[i] != '\0'; i++ )
         hash = ((hash << 3) + hash) + 1 + value[i];
@@ -82,13 +78,13 @@
 
       // returns true if the position is occupied
     template <class T>
-    bool Hash<T>::IsActive(int pos) const
+    bool Hash<T>::IsActive(u_int32 pos) const
     {
       return ( array[pos].info == ACTIVE );
     }
 
 
-      // inserts value into the hash table
+      // inserts value u_int32o the hash table
     template <class T>
     bool Hash<T>::Insert( const T& value )
     {
@@ -98,12 +94,12 @@
 
       HashNode newNode(value, ACTIVE);
 
-      int h1 = hash(value);
-      int h2 = hash2(value);
+      u_int32 h1 = hash(value);
+      u_int32 h2 = hash2(value);
 
-      for ( int i = 1; ; i++)
+      for ( u_int32 i = 1; ; i++)
       {
-        int pos = abs((h1 + i*h2) % size);
+        u_int32 pos = abs((h1 + i*h2) % size);
 
         if ( !IsActive( pos ) )
         {
@@ -123,7 +119,7 @@
     bool Hash<T>::Remove( const T& value )
     {
       bool flag = true;
-      int pos = hash( value );
+      u_int32 pos = hash( value );
 
       if ( IsActive(pos) )
       {
@@ -149,7 +145,7 @@
 
 
   template <class T>
-  Hash<T>::Hash( int size ) : size(size)
+  Hash<T>::Hash( u_int32 size ) : size(size)
   {
     array.resize(size);
     Empty();
@@ -200,11 +196,11 @@
   {
     if ( numberOfItems == 0 ) return false;
 
-    int h1 = hash(value);
-    int h2 = hash2(value);
+    u_int32 h1 = hash(value);
+    u_int32 h2 = hash2(value);
 
-    for ( int i = 1; ; i++) {
-      int pos = abs( (h1 + (i*h2)) % size );
+    for ( u_int32 i = 1; ; i++) {
+      u_int32 pos = abs( (h1 + (i*h2)) % size );
 
       if ( !IsActive( pos ) )
         return false;
@@ -220,11 +216,11 @@
   {
     if ( numberOfItems == 0 ) return false;
 
-    int h1 = hash(check);
-    int h2 = hash2(check);
+    u_int32 h1 = hash(check);
+    u_int32 h2 = hash2(check);
 
-    for ( int i = 1; ; i++) {
-      int pos = abs( (h1 + (i*h2)) % size );
+    for ( u_int32 i = 1; ; i++) {
+      u_int32 pos = abs( (h1 + (i*h2)) % size );
 
       if ( !IsActive( pos ) ) {
         return false;
@@ -238,7 +234,7 @@
 
     // number of entries
   template <class T>
-  int Hash<T>::numEntries(void)
+  u_int32 Hash<T>::numEntries(void)
   {
     return ( numberOfItems );
   }

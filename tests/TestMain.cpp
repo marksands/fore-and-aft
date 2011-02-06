@@ -1,4 +1,4 @@
-// g++ tests.cpp  -I/Users/mark/Downloads/CppUTest-v2.3/include /Users/mark/Downloads/CppUTest-v2.3/lib/libCppUTest.a
+// g++ TestMain.cpp  -I/Users/mark/Downloads/CppUTest-v2.3/include /Users/mark/Downloads/CppUTest-v2.3/lib/libCppUTest.a
 #include <iostream>
 #include <sstream>
 
