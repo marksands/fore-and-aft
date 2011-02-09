@@ -106,6 +106,9 @@ void Board::possibleStates(std::vector<Board>& states)
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[NORTH]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
+        // heuristic
+      temp.distance(emptySlotIndex.movePositionTo(MOVES[NORTH]));
+      temp.numberOfWrongTokens();
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -117,7 +120,10 @@ void Board::possibleStates(std::vector<Board>& states)
     maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[EAST]));
     std::auto_ptr<Board> node(new Board(*this));
-    temp.parent_ = node.release();    
+    temp.parent_ = node.release();
+      // heuristic
+    temp.distance(emptySlotIndex.movePositionTo(MOVES[EAST]));
+    temp.numberOfWrongTokens();
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -130,6 +136,9 @@ void Board::possibleStates(std::vector<Board>& states)
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[SOUTH]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
+      // heuristic
+    temp.distance(emptySlotIndex.movePositionTo(MOVES[SOUTH]));
+    temp.numberOfWrongTokens();
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -142,6 +151,9 @@ void Board::possibleStates(std::vector<Board>& states)
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[WEST]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
+      // heuristic
+    temp.distance(emptySlotIndex.movePositionTo(MOVES[WEST]));
+    temp.numberOfWrongTokens();
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -156,6 +168,9 @@ void Board::possibleStates(std::vector<Board>& states)
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[NORTH]));
     std::auto_ptr<Board> node(new Board(*this));
     temp.parent_ = node.release();    
+      // heuristic
+    temp.distance(emptySlotIndex.movePositionTo(JUMPS[NORTH]));
+    temp.numberOfWrongTokens();
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -167,7 +182,10 @@ void Board::possibleStates(std::vector<Board>& states)
     maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[EAST]));
     std::auto_ptr<Board> node(new Board(*this));
-    temp.parent_ = node.release();    
+    temp.parent_ = node.release();
+      // heuristic
+    temp.distance(emptySlotIndex.movePositionTo(JUMPS[EAST]));
+    temp.numberOfWrongTokens();
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -179,7 +197,10 @@ void Board::possibleStates(std::vector<Board>& states)
     maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[SOUTH]));
     std::auto_ptr<Board> node(new Board(*this));
-    temp.parent_ = node.release();    
+    temp.parent_ = node.release();
+      // heuristic
+    temp.distance(emptySlotIndex.movePositionTo(JUMPS[SOUTH]));
+    temp.numberOfWrongTokens();
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);
@@ -191,7 +212,10 @@ void Board::possibleStates(std::vector<Board>& states)
     maxJumps--;
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(JUMPS[WEST]));
     std::auto_ptr<Board> node(new Board(*this));
-    temp.parent_ = node.release();    
+    temp.parent_ = node.release();
+      // heuristic
+    temp.distance(emptySlotIndex.movePositionTo(JUMPS[WEST]));
+    temp.numberOfWrongTokens();
     if ( !hash.isThere(temp.chargrid) ) {
       hash.insertEntry(temp.chargrid);
       states.push_back(temp);

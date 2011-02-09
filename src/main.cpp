@@ -36,6 +36,16 @@
 *   Improvements that did work: A single dimensional array instead of a multi dimensional vector array, using
 *   bitshift operations instead of dividing by 2, unrolling for loops, using a hashtable for O(1) lookup.
 *
+*
+*   Heuristic Search:
+*     7x7: Total nodes: 130
+*            Total time: 0.047694 seconds
+*     9x9: Total nodes: 262
+*            Total Time: 0.1062621 seconds
+*     11x11: Total nodes: 489
+*              Total time: 0.546488 seconds
+*
+*
 /--------------------------------------------------------------------------------/
 *
 */
@@ -56,7 +66,7 @@ using std::vector;
 using std::cin;
 
 enum MenuOptions { DEPTH = 1, BREADTH = 2, HEURISTIC = 3, QUIT = 4 };
-enum SizeOptoins { FIVE = 1, SEVEN =  2, NINE = 3 };
+enum SizeOptoins { FIVE = 1, SEVEN =  2, NINE = 3, ELEV = 4, THIRT = 5 };
 
 int SizeMenu();
 int Menu();
@@ -102,6 +112,10 @@ int SizeMenu()
     << setw(3) << SEVEN << ". 7x7 Grid"
     << endl
     << setw(3) << NINE  << ". 9x9 Grid"
+    << endl
+    << setw(3) << ELEV  << ". 11x11 Grid"
+    << endl
+    << setw(3) << THIRT  << ". 13x13 Grid"
     << endl
     << endl
     << setw(3) << " " << "Enter choice: ";
@@ -160,6 +174,12 @@ void InitBoard( Board*& board )
       case NINE:
         board = new Board(9);
         break;
+      case ELEV:
+        board = new Board(11);
+        break;
+      case THIRT:
+        board = new Board(13);
+        break;
       default:
         board = new Board(5);
     }
@@ -206,10 +226,8 @@ void BreadthFirstSearch( Board*& board )
 void HeuristicSearch( Board*& board )
 {
   Timer t;
-  std::cerr << std::endl
-    << "Not yet implemented"
-    << std::endl
-    << std::endl;
+  Board goalBoard(board->getSize()); goalBoard.reverse();
+  heuristic( *board, goalBoard );
   delete board;
 }
 

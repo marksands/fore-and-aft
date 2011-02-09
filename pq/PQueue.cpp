@@ -3,7 +3,7 @@
 
 #include "PQueue.hpp"
 #include "Heap.hpp"
-#include "Hash.hpp"
+#include "HashTable.hpp"
 #include "Node.hpp"
 
 #ifndef PQUEUE_CPP
