@@ -4,34 +4,22 @@
 #include <deque>
 #include "Board.hpp"
 
-class BaseADT {
-  public:
-    virtual Board Pop() = 0;
-    virtual Board Top() = 0;
-};
-
-class Stack : public BaseADT, public std::stack<Board> {
+class Stack : public std::stack<Board> {
   public:
     Board Pop() {
       Board node = top(); pop();
       return node;
     }
-
-    Board Top() {
-      return top();
-    }
+    Board Top() { return top(); }
 };
 
-class Queue : public BaseADT, public std::queue<Board> {
+class Queue : public std::queue<Board> {
   public:
     Board Pop() {
       Board node = front(); pop();
       return node;
     }
-
-    Board Top() {
-      return front();
-    }
+    Board Top() { return front(); }
 };
 
 struct comp { 
@@ -40,16 +28,13 @@ struct comp {
   }
 };
 
-class PriorityQueue : public BaseADT, public std::priority_queue< Board, std::vector< Board >, comp > {
+class PriorityQueue : public std::priority_queue< Board, std::vector< Board >, comp > {
   public:
     Board Pop() {
       Board node = top(); pop();
       return node;
     }
-
-    Board Top() {
-      return top();
-    }
+    Board Top() { return top(); }
 };
 
   // performs a depth first search on the board
@@ -61,32 +46,34 @@ void heuristic(const Board& currentState, const Board& goalBoard);
 
   // One search algorithm to rule them all!
 template <class T>
-void genericSearch(const Board& currentState, const Board& goalBoard, T open )
+void genericSearch(const Board& currentState, const Board& goalBoard )
 {
-  open->push(currentState);
+  T open;
+  open.push(currentState);
+  std::stack<Board> closed;
 
   u_int32 expanded = 0;
 
-  while ( !open->empty() )
+  while ( !open.empty() )
   {
-    Board currentBoard = open->Pop();
+    Board currentBoard = open.Pop();
+    closed.push(currentBoard);
 
     if (currentBoard == goalBoard)
       break;
 
-    std::vector<Board>* states = new std::vector<Board>;
-    currentBoard.possibleStates(*states);
+    std::vector<Board> states;
+    currentBoard.possibleStates(states);
 
-    u_int32 states_size = states->size();
+    u_int32 states_size = states.size();
     for ( u_int32 i = 0; i < states_size; i++ ) {
       expanded++;
-      open->push(states->operator[](i));
+      open.push(states[i]);
     }
-    delete states;
   }
 
   u_int32 count = 0;
-  Board node = open->Top();
+  Board node = closed.top();
 
   while( node.parent_ != NULL )
   {
@@ -111,9 +98,7 @@ void genericSearch(const Board& currentState, const Board& goalBoard, T open )
 */
 void dfs(const Board& currentState, const Board& goalBoard)
 {
-  Stack* s = new Stack;
-  genericSearch( currentState, goalBoard, s );
-  delete s;
+  genericSearch<Stack>( currentState, goalBoard );
 }
 
 /*
@@ -125,9 +110,7 @@ void dfs(const Board& currentState, const Board& goalBoard)
 */
 void bfs(const Board& currentState, const Board& goalBoard)
 {
-  Queue* q = new Queue;
-  genericSearch( currentState, goalBoard, q );
-  delete q;
+  genericSearch<Queue>( currentState, goalBoard );
 }
 
 /*
@@ -139,9 +122,7 @@ void bfs(const Board& currentState, const Board& goalBoard)
 */
 void heuristic(const Board& currentState, const Board& goalBoard)
 {
-  PriorityQueue* pq = new PriorityQueue;
-  genericSearch( currentState, goalBoard, pq );
-  delete pq;
+  genericSearch<PriorityQueue>( currentState, goalBoard );
 }
 
 
