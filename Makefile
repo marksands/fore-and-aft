@@ -61,9 +61,9 @@ TEST_EXECUTABLE = test
 CPPFLAGS = -g -O2 -c -Wall -fpermissive -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECT_ROOT)/pq -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
 LIB = $(CPPUTEST_HOME)lib/libCppUTest.a
 
-all: clean $(TEST_EXECUTABLE) cleanup
+all: clean $(EXECUTABLE) cleanup
 
-production: clean $(EXECUTABLE) cleanup
+test: clean $(TEST_EXECUTABLE) cleanup
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)

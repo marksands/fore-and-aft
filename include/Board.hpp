@@ -35,41 +35,63 @@ class Board {
       // returns the size of the board
     u_int32 getSize() { return size_; }
 
+      // distance a tile is from the closest corner
     void distance( const Position& pos ) {
+
+      // bottom-right corner
+      //size_ * ((size_+1)/2) + (size_/2);
+
+      // top-left cornerm blue
+      //size_ * ((size_-1)/2) + (size_/2);
+
       if ( tokenForPosition(pos) == RED ) {
-        int a = (size_*pos.col + pos.row);
-        int b = (size_*((size_/2)+1) + (size_/2));
-        fCost = ( a - b ) < 0 ? 0 : (a - b);
+        //int a = (size_*pos.col + pos.row);
+        int a = (size_*pos.row + pos.col);
+        int b = (size_*((size_+1)/2) + (size_/2));
+          if ( (a - b) <= 0 ) fCost = 0;
+          else fCost = (a-b);
+      }
+      else if ( tokenForPosition(pos) == BLUE ) {
+        //int a = (size_*pos.col + pos.row);
+        int a = (size_*pos.row + pos.col);
+        int b = (size_*((size_-1)/2) + (size_/2));
+          if ( (a - b) <= 0 ) fCost = 0;
+          else fCost = (a-b);
       }
       else {
-        int a = (size_*pos.col + pos.row);
-        int b = (size_*((size_/2)-1) + (size_/2));
-        fCost = ( a - b ) < 0 ? 0 : (a - b);
+        fCost = 0;
       }
+      //std::cout << "fCost : " << fCost << "\n";
     }
 
+      // one of my hueristic functions, number of wrong tokens
     void numberOfWrongTokens()
     {
-      int shouldHave = ( ((int)(size_/2)+1) * ((int)(size_/2)+1) ) - 1;
-      int doesHave = 0;
+      u_int32 shouldHave = ( ((size_+1)/2) * ((size_+1)/2) ) - 1;
+      u_int32 doesHave = 0;
 
         // search only half the board
       for ( u_int32 i = 0; i < size_/2; i++ ){
         for (u_int32 j = 0; j < size_/2; j++ ) {
-           if ( board[size_*i+j] == RED )
+           if ( board[size_*i+j] == BLUE )
              doesHave++;
         }
       }
       gCost = shouldHave - doesHave;
     }
 
-    int getfCost() {
+    u_int32 getfCost() {
+      std::cout << fCost << "\n";
       return fCost;
     }
 
-      // one of my hueristic functions, number of wrong tokens
-    int getgCost() {
+    u_int32 getgCost() {
       return gCost;
+    }
+
+      //  the heuristic cost, g(n) + f(n)
+    u_int32 hCost() {
+      return (getfCost()+getgCost());
     }
 
       // populates a vector<Board> with all possible neighbors of the board's current state
@@ -94,10 +116,10 @@ class Board {
     Board *parent_;
   private:
       // returns the character at the position on the board
-    char tokenForPosition(const Position& pos);
+    char tokenForPosition(const Position& pos) const;
 
       // A*
-    int fCost, gCost;
+    u_int32 fCost, gCost;
 
     bool solutionFound;
     u_int32 size_;

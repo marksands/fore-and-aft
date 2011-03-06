@@ -24,7 +24,7 @@ class Queue : public std::queue<Board> {
 
 struct comp { 
   bool operator()( Board lhs, Board rhs) {
-    return (lhs.getfCost()+lhs.getgCost()) < (rhs.getfCost()+rhs.getgCost());
+    return ( lhs.hCost() < rhs.hCost() );
   }
 };
 
@@ -68,6 +68,8 @@ void genericSearch(const Board& currentState, const Board& goalBoard )
     u_int32 states_size = states.size();
     for ( u_int32 i = 0; i < states_size; i++ ) {
       expanded++;
+      // this doesn't make any sense. the fCost should print a reasonable value
+      //std::cout << "YO: " << states[i].getfCost() << "\n";
       open.push(states[i]);
     }
   }

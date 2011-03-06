@@ -15,6 +15,11 @@ class Position {
     Position() : row(0), col(0), size_(5) {}
     Position(int c, int r) : row(r), col(c) {}
 
+    Position(const Position& copy) {
+      row = copy.row;
+      col = copy.col;
+    }
+
       // set the row and column of the position
     void setPosition(int c, int r) { row = r; col = c; }
       // set the size of board 
