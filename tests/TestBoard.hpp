@@ -1,3 +1,7 @@
+#pragma once
+#ifndef TEST_BOARD
+#define TEST_BOARD
+
 #include <CppUTest/CommandLineTestRunner.h>
 #include <CppUTest/TestHarness.h>
 
@@ -228,3 +232,5 @@ TEST_GROUP(Board)
     CHECK( !e.validJumpToPosition(JUMPS[SOUTH], SOUTH) );
     CHECK( !e.validJumpToPosition(JUMPS[WEST], WEST) );
   }
+
+#endif

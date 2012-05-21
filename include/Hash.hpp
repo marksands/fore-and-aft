@@ -51,7 +51,7 @@ typedef unsigned long int u_int32;
     virtual void insertEntry(T value) = 0;
     virtual void deleteEntry(T value) = 0;
     virtual bool isThere(T value) = 0;
-    virtual u_int32 numEntries(void) = 0; 
+    virtual u_int32 numEntries(void) = 0;
   };
 
   //---------------------------------------------------------------------------------------------------
@@ -79,14 +79,14 @@ typedef unsigned long int u_int32;
     };
 
       // vector array of HashNode
-    std::vector<HashNode> array; 
+    std::vector<HashNode> array;
 
     virtual u_int32 hash(T value) const;
       // finds the hashvalue of the item : 1st hash
     virtual u_int32 hash2(T value) const;
       // finds the hashvalue of the item : 2nd hash
-    virtual bool IsActive(u_int32 pos) const; 
-      // returns true if the position is occupied 
+    virtual bool IsActive(u_int32 pos) const;
+      // returns true if the position is occupied
 
     virtual void rehash();
       // rehashes the hash table to double its size
@@ -112,13 +112,13 @@ typedef unsigned long int u_int32;
       // deletes entry 'value'
     virtual bool isThere(T value);
       // boolean is there?
-    virtual u_int32 numEntries(void); 
+    virtual u_int32 numEntries(void);
       // number of entries
 
     virtual bool equalHash(T check, T goal);
       // checks if v1 and v2 have the same hash
   };
-  
+
   #include "../src/Hash.cpp"
 
 #endif

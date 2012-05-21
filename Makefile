@@ -41,8 +41,7 @@ T_OBJECTS = $(TEST_CODE:.cpp=.o)
 PROJECT_ROOT=.
 
 # CppUTest root
-#CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3/
-CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
+CPPUTEST_HOME=$(PROJECT_ROOT)/lib/CppUTest-v2.3/
 
 # compile with -pg
 # gprof executable_name gmon.out
@@ -58,7 +57,7 @@ TEST_EXECUTABLE = test
 #CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
 
 # Include CppUnit
-CPPFLAGS = -g -O2 -c -Wall -fpermissive -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECT_ROOT)/pq -I$(PROJECTROOT)/tests -I$$CPPUTEST_HOME/include
+CPPFLAGS = -g -O2 -c -Wall -fpermissive -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECT_ROOT)/pq -I$(PROJECTROOT)/tests -I$(CPPUTEST_HOME)/include
 LIB = $(CPPUTEST_HOME)lib/libCppUTest.a
 
 all: clean $(EXECUTABLE) cleanup

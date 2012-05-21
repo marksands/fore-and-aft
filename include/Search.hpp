@@ -2,6 +2,7 @@
 #include <stack>
 #include <queue>
 #include <deque>
+#include <algorithm>
 #include "Board.hpp"
 
 class Stack : public std::stack<Board> {
@@ -22,13 +23,13 @@ class Queue : public std::queue<Board> {
     Board Top() { return front(); }
 };
 
-struct comp { 
-  bool operator()( Board lhs, Board rhs) {
+struct comp {
+  inline bool operator()( Board lhs, Board rhs) {
     return ( lhs.hCost() < rhs.hCost() );
   }
 };
 
-class PriorityQueue : public std::priority_queue< Board, std::vector< Board >, comp > {
+class PriorityQueue : public std::priority_queue<Board, std::vector< Board >, comp> {
   public:
     Board Pop() {
       Board node = top(); pop();

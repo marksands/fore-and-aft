@@ -2,14 +2,14 @@
 #pragma mark Private
 
       //***********************************
-      //  
+      //
       //    Private Methods
       //
       //***********************************
 
 
       // erases the hash table
-    template <class T>  
+    template <class T>
     void Hash<T>::Empty()
     {
       size_t size_ = array.size();
@@ -86,7 +86,7 @@
     template <class T>
     bool Hash<T>::Insert( const T& value )
     {
-      if ( numberOfItems != 0 ) 
+      if ( numberOfItems != 0 )
         if ( (double)numberOfItems/(double)size > 0.6 )
           rehash();
 
@@ -136,7 +136,7 @@
 
 
       //***********************************
-      //  
+      //
       //    Public Methods
       //
       //***********************************
@@ -185,7 +185,7 @@
   void Hash<T>::deleteEntry(T value)
   {
     if ( Remove( value ) );
-    else std::cerr << "Failed to insert!" << std::endl;
+    else std::cerr << "Failed to remove!" << std::endl;
   }
 
     // boolean is there?

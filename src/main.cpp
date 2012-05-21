@@ -7,7 +7,7 @@
 *  Tests: Build CppUTest, and define the CPPUTEST_HOME env in the Makefile, `make && ./test` to run
 *    Run: `make production` and `./graph`
 *
-* Post Mortem: Below is a chart of information displaying the results I received on 
+* Post Mortem: Below is a chart of information displaying the results I received on
 *   testing my application. All results were tested on my MacBook Pro 2.4Ghz with 2GB of RAM,
 *   my 9x9 was tested on a linode VPS server with unknown CPU/RAM.
 *
@@ -29,7 +29,7 @@
 *   my stack and heap. It only ran about once on my local machine and ran a few times on my linode server.
 *   My 5x5 bfs runs in about 1.8 seconds, but my 7x7 and 9x9 would not finish. If I had more time to refactor
 *   my code, I believe I could have taken some measures to improve efficiency in both areas. One thing I wanted to
-*   try but didn't have the time to, was using bitset instead as an alternative to my array and chargrid to see 
+*   try but didn't have the time to, was using bitset instead as an alternative to my array and chargrid to see
 *   dramatic improvements. I tried converting my character grid to a char* isntead of a std::string but the
 *   improvements weren't anything special so I switched back to std::string. I also tried a recursive dfs solution
 *   instead, but it was actually slower for me, so I retained my stack implementation.
@@ -84,15 +84,27 @@ int main(int argc, char* argv[])
   int choice = 0;
   Board *board;
 
-  void (*menuTable[5])( Board*& board ) = { NULL, &DepthFirstSearch, &BreadthFirstSearch, &HeuristicSearch, &QuitProgram };
+  void (*menuTable[5])( Board*& board ) = {
+    0, &DepthFirstSearch, &BreadthFirstSearch, &HeuristicSearch, &QuitProgram
+  };
 
-  do {
-    InitBoard( board );
-    menuTable[ choice = Menu() ]( board );
-    hash.clear();
-  } while(choice != 4);
+  try {
+    do {
+      InitBoard( board );
+      menuTable[ choice = Menu() ]( board );
+      hash.clear();
+    } while(choice != 4);
+  }
+  catch(std::exception &e) {
+    std::cerr << "Error! " << e.what() << "\n";
+    return EXIT_FAILURE;
+  }
+  catch(...) {
+    std::cerr << "Error! Something REALLY BAD happend!\n";
+    return EXIT_FAILURE;
+  }
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 /*

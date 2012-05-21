@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 #include "Position.hpp"
 #include "Global.hpp"
@@ -23,17 +24,21 @@ using std::endl;
   //------------------------------------------------------------------------------------
 class Board {
   public:
-    Board(const u_int32 size = 5);
+    Board(const int32 size = 5);
     Board(const Board& copy);
 
     virtual ~Board() { }
 
       // returns a new board with slot and token positions switched
     Board swap(const Position& slot, const Position& token) const;
+
       // reveresed the board
     void reverse();
+
       // returns the size of the board
-    u_int32 getSize() { return size_; }
+    inline const int32 getSize() const {
+      return size_;
+    }
 
       // distance a tile is from the closest corner
     void distance( const Position& pos ) {
@@ -61,42 +66,48 @@ class Board {
       else {
         fCost = 0;
       }
-      //std::cout << "fCost : " << fCost << "\n";
+
+      if (fCost < 0)
+        throw std::runtime_error("F Cost is negative!");
     }
 
-      // one of my hueristic functions, number of wrong tokens
     void numberOfWrongTokens()
     {
-      u_int32 shouldHave = ( ((size_+1)/2) * ((size_+1)/2) ) - 1;
-      u_int32 doesHave = 0;
+      int32 shouldHave = ( ((size_+1)/2) * ((size_+1)/2) ) - 1;
+      int32 doesHave = 0;
 
         // search only half the board
-      for ( u_int32 i = 0; i < size_/2; i++ ){
-        for (u_int32 j = 0; j < size_/2; j++ ) {
+      for ( int32 i = 0; i < size_/2; i++ ){
+        for (int32 j = 0; j < size_/2; j++ ) {
            if ( board[size_*i+j] == BLUE )
              doesHave++;
         }
       }
+
       gCost = shouldHave - doesHave;
+
+      if (gCost < 0)
+        throw std::runtime_error("G Cost is negative!");
     }
 
-    u_int32 getfCost() {
-      std::cout << fCost << "\n";
+    inline const int32 getfCost() const {
       return fCost;
     }
 
-    u_int32 getgCost() {
+    inline const int32 getgCost() const {
       return gCost;
     }
 
       //  the heuristic cost, g(n) + f(n)
-    u_int32 hCost() {
-      return (getfCost()+getgCost());
+    inline const int32 hCost() const {
+      int32 hCost = getfCost() + getgCost();
+      if (hCost < 0)
+        throw std::runtime_error("H Cost is negative!");
+      return hCost;
     }
 
       // populates a vector<Board> with all possible neighbors of the board's current state
     void possibleStates(std::vector<Board>& states);
-
       // validates the move from Position pos to a given Cardinal Direction
     bool validMoveToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
       // validates the jump from Position pos to a given Cardinal Direction
@@ -119,10 +130,10 @@ class Board {
     char tokenForPosition(const Position& pos) const;
 
       // A*
-    u_int32 fCost, gCost;
+    int32 fCost, gCost;
 
     bool solutionFound;
-    u_int32 size_;
+    int32 size_;
     Position emptySlotIndex;
 };
 

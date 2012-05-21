@@ -13,7 +13,7 @@ extern Hash<std::string> hash;
 *   Author: Mark Sands
 *   Date modified: 2-3-11
 */
-Board::Board(const u_int32 size) : parent_(NULL), solutionFound(false), size_(size)
+Board::Board(const int32 size) : parent_(NULL), solutionFound(false), size_(size)
 {
   fCost = 999;
   gCost = 999;
@@ -21,10 +21,11 @@ Board::Board(const u_int32 size) : parent_(NULL), solutionFound(false), size_(si
   board.reserve(size*size);
   chargrid = "";
 
-  u_int32 sized2 = size >> 1;
+  //int32 sized2 = size >> 1;
+  int32 sized2 = size >> 1;
 
-  for (u_int32 i = 0; i < size; ++i) {
-    for ( u_int32 j = 0; j < size; j++ )
+  for (int32 i = 0; i < size; ++i) {
+    for ( int32 j = 0; j < size; j++ )
     {
       if      ((i <= sized2) && (j <= sized2)) { board.push_back(RED);   chargrid += RED;   }
       else if ((i >= sized2) && (j >= sized2)) { board.push_back(BLUE);  chargrid += BLUE;  }
@@ -32,6 +33,8 @@ Board::Board(const u_int32 size) : parent_(NULL), solutionFound(false), size_(si
     }
   }
 
+  //board[(size*size) >> 1] = START;
+  //chargrid[(size*size) >> 1] = START;
   board[(size*size) >> 1] = START;
   chargrid[(size*size) >> 1] = START;
 
@@ -52,6 +55,9 @@ Board::Board(const Board& copy)
     chargrid = copy.chargrid;
     board = copy.board;
     emptySlotIndex = copy.emptySlotIndex;
+  }
+  else {
+    throw std::runtime_error("Tried to copy board of same board!");
   }
 }
 
@@ -100,7 +106,7 @@ void Board::possibleStates(std::vector<Board>& states)
 {
   states.clear();
 
-  u_int32 maxJumps = 4;
+  int32 maxJumps = 4;
 
     /** One Tile Moves **/
 
@@ -139,7 +145,7 @@ void Board::possibleStates(std::vector<Board>& states)
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[SOUTH]));
     if ( !hash.isThere(temp.chargrid) ) {
       std::auto_ptr<Board> node(new Board(*this));
-      temp.parent_ = node.release();    
+      temp.parent_ = node.release();
         // heuristic
       temp.distance(emptySlotIndex);
       temp.numberOfWrongTokens();
@@ -154,7 +160,7 @@ void Board::possibleStates(std::vector<Board>& states)
     Board temp = swap(emptySlotIndex, emptySlotIndex.movePositionTo(MOVES[WEST]));
     if ( !hash.isThere(temp.chargrid) ) {
       std::auto_ptr<Board> node(new Board(*this));
-      temp.parent_ = node.release();    
+      temp.parent_ = node.release();
         // heuristic
       temp.distance(emptySlotIndex);
       temp.numberOfWrongTokens();
@@ -320,8 +326,8 @@ bool Board::validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS directi
 */
 ostream& operator<<(ostream& os, const Board& b)
 {
-  for ( u_int32 i = 0; i < b.size_; i++ ) {
-    for ( u_int32 j = 0; j < b.size_; j++ )
+  for ( int32 i = 0; i < b.size_; i++ ) {
+    for ( int32 j = 0; j < b.size_; j++ )
       os << "" << b.board[b.size_*i+j] << " ";
     os << "\n";
   }
@@ -349,13 +355,18 @@ bool operator==(const Board& lhs, const Board& rhs)
 */
 Board& Board::operator=(const Board& rhs)
 {
-  if ( this != &rhs) {
-    parent_ = rhs.parent_;
-    size_ = rhs.size_;
-    chargrid = rhs.chargrid;
-    board = rhs.board;
-    emptySlotIndex = rhs.emptySlotIndex;
-  }
+  //if ( this != &rhs) {
+    Board temp(rhs);
+
+    std::swap(parent_, temp.parent_);
+    std::swap(size_, temp.size_);
+    std::swap(chargrid, temp.chargrid);
+    std::swap(board, temp.board);
+    std::swap(emptySlotIndex, temp.emptySlotIndex);
+  //}
+  //else {
+    //throw std::runtime_error("Tried to assign board to the same board!");
+  //}
 
   return *this;
 }

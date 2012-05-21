@@ -1,3 +1,7 @@
+#pragma once
+#ifndef TEST_POSTITION
+#define TEST_POSITION
+
 #include <CppUTest/CommandLineTestRunner.h>
 #include <CppUTest/TestHarness.h>
 
@@ -47,3 +51,5 @@ TEST_GROUP(Position)
     LONGS_EQUAL( p->row, 2+1 )
     LONGS_EQUAL( p->col, 2+1 )
   }
+
+#endif

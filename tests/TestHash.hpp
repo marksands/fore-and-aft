@@ -1,3 +1,7 @@
+#pragma once
+#ifndef TEST_HASH
+#define TEST_HASH
+
 #include <CppUTest/CommandLineTestRunner.h>
 #include <CppUTest/TestHarness.h>
 
@@ -30,3 +34,5 @@ TEST_GROUP(Hash)
     //CHECK( hash.isThere(const_cast<char*>("RRR00RRR00RSB00BBB00BBB")) );
     CHECK( hash.isThere("RRR00RRR00RSB00BBB00BBB") );
   }
+
+#endif
