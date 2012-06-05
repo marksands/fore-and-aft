@@ -25,7 +25,7 @@ void stackNew(stack* s, int elemSize)
   s->loglength = 0;
   s->alloclength = 4;
   s->elems = malloc(4*elemSize);
-  assert( s->elems != NULL );
+  assert( s->elems != nullptr );
 }
 
 void stackDispose( stack* s )
@@ -41,7 +41,7 @@ void stackPush(stack* s, void* elemAddr)
   void* target = (char*)s->elems + s->loglength * s->elemSize;
   memcpy(target, elemAddr, s->elemSize);
   s->loglength++;
-} 
+}
 
 void stackPop( stack* s, void* elemAddr )
 {

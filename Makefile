@@ -11,7 +11,7 @@ GREY="\[\033[0;97m\]"
 PS_CLEAR="\033[0m"
 SCREEN_ESC="\[\033k\033\134\]"
 
-CXX = g++
+CXX = g++-4.7 -std=gnu++11
 
 # dirs
 OBJDIR = .
@@ -56,13 +56,17 @@ TEST_EXECUTABLE = test
 
 #CPPUTEST_HOME=/Users/mark/Downloads/CppUTest-v2.3-2/
 
+# Valgrind valgrind -v --leak-check=full ./graph
+# g++-4.7 -std=c++11 -O0 -g3 test3.cpp -o graph
+# g++-4.7 -std=gnu++11 -O0 -g3 -I lib/CppUTest-v2.3/include -I include -Llib/CppUTest-v2.3/lib/ -lCppUTest tests/TestMain.cpp src/Position.cpp src/Board.cpp -o test
+
 # Include CppUnit
-CPPFLAGS = -g -O2 -c -Wall -fpermissive -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECT_ROOT)/pq -I$(PROJECTROOT)/tests -I$(CPPUTEST_HOME)/include
+CPPFLAGS = -g -g3 -O0 -O2 -c -Wall -fpermissive -I$(PROJECT_ROOT)/src -I$(PROJECT_ROOT)/include -I$(PROJECT_ROOT)/pq -I$(PROJECTROOT)/tests -I$(CPPUTEST_HOME)/include
 LIB = $(CPPUTEST_HOME)lib/libCppUTest.a
 
 all: clean $(EXECUTABLE) cleanup
 
-test: clean $(TEST_EXECUTABLE) cleanup
+test: clean $(TEST_EXECUTABLE)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
@@ -110,6 +114,9 @@ run:
 log:
 	git log '--pretty=format:%ad %s (%cn)' --date=short > CHANGELOG
 	cat CHANGELOG
+
+valgrind:
+	valgrind -v --leak-check=full --show-reachable=yes --track-origins=yes ./graph
 
   # LOADED SUITE test
   # CompactorTest

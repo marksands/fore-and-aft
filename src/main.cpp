@@ -81,14 +81,14 @@ void QuitProgram( Board*& board );
 
 int main(int argc, char* argv[])
 {
-  int choice = 0;
-  Board *board;
-
-  void (*menuTable[5])( Board*& board ) = {
-    0, &DepthFirstSearch, &BreadthFirstSearch, &HeuristicSearch, &QuitProgram
-  };
-
   try {
+    int choice = 0;
+    Board *board;
+
+    void (*menuTable[5])( Board*& board ) = {
+      0, &DepthFirstSearch, &BreadthFirstSearch, &HeuristicSearch, &QuitProgram
+    };
+
     do {
       InitBoard( board );
       menuTable[ choice = Menu() ]( board );

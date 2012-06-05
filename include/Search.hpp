@@ -1,8 +1,6 @@
 #include <vector>
 #include <stack>
 #include <queue>
-#include <deque>
-#include <algorithm>
 #include "Board.hpp"
 
 class Stack : public std::stack<Board> {
@@ -23,13 +21,7 @@ class Queue : public std::queue<Board> {
     Board Top() { return front(); }
 };
 
-struct comp {
-  inline bool operator()( Board lhs, Board rhs) {
-    return ( lhs.hCost() < rhs.hCost() );
-  }
-};
-
-class PriorityQueue : public std::priority_queue<Board, std::vector< Board >, comp> {
+class PriorityQueue : public std::priority_queue<Board, std::vector<Board>, std::greater<Board>> {
   public:
     Board Pop() {
       Board node = top(); pop();
@@ -66,19 +58,16 @@ void genericSearch(const Board& currentState, const Board& goalBoard )
     std::vector<Board> states;
     currentBoard.possibleStates(states);
 
-    u_int32 states_size = states.size();
-    for ( u_int32 i = 0; i < states_size; i++ ) {
+    for (auto i = states.begin(); i != states.end(); ++i) {
       expanded++;
-      // this doesn't make any sense. the fCost should print a reasonable value
-      //std::cout << "YO: " << states[i].getfCost() << "\n";
-      open.push(states[i]);
+      open.push(*i);
     }
   }
 
   u_int32 count = 0;
   Board node = closed.top();
 
-  while( node.parent_ != NULL )
+  while( node.parent_ != nullptr )
   {
     count++;
     std::cout << node << std::endl;

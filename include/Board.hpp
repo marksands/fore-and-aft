@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <memory>
 
 #include "Position.hpp"
 #include "Global.hpp"
@@ -24,87 +25,29 @@ using std::endl;
   //------------------------------------------------------------------------------------
 class Board {
   public:
-    Board(const int32 size = 5);
+    explicit Board(const int32 size = 5);
     Board(const Board& copy);
 
     virtual ~Board() { }
 
       // returns a new board with slot and token positions switched
-    Board swap(const Position& slot, const Position& token) const;
-
+    Board swap(const Position& slot, const Position& token);
       // reveresed the board
     void reverse();
 
       // returns the size of the board
-    inline const int32 getSize() const {
-      return size_;
-    }
-
+    const int32 getSize() const;
       // distance a tile is from the closest corner
-    void distance( const Position& pos ) {
-
-      // bottom-right corner
-      //size_ * ((size_+1)/2) + (size_/2);
-
-      // top-left cornerm blue
-      //size_ * ((size_-1)/2) + (size_/2);
-
-      if ( tokenForPosition(pos) == RED ) {
-        //int a = (size_*pos.col + pos.row);
-        int a = (size_*pos.row + pos.col);
-        int b = (size_*((size_+1)/2) + (size_/2));
-          if ( (a - b) <= 0 ) fCost = 0;
-          else fCost = (a-b);
-      }
-      else if ( tokenForPosition(pos) == BLUE ) {
-        //int a = (size_*pos.col + pos.row);
-        int a = (size_*pos.row + pos.col);
-        int b = (size_*((size_-1)/2) + (size_/2));
-          if ( (a - b) <= 0 ) fCost = 0;
-          else fCost = (a-b);
-      }
-      else {
-        fCost = 0;
-      }
-
-      if (fCost < 0)
-        throw std::runtime_error("F Cost is negative!");
-    }
-
-    void numberOfWrongTokens()
-    {
-      int32 shouldHave = ( ((size_+1)/2) * ((size_+1)/2) ) - 1;
-      int32 doesHave = 0;
-
-        // search only half the board
-      for ( int32 i = 0; i < size_/2; i++ ){
-        for (int32 j = 0; j < size_/2; j++ ) {
-           if ( board[size_*i+j] == BLUE )
-             doesHave++;
-        }
-      }
-
-      gCost = shouldHave - doesHave;
-
-      if (gCost < 0)
-        throw std::runtime_error("G Cost is negative!");
-    }
-
-    inline const int32 getfCost() const {
-      return fCost;
-    }
-
-    inline const int32 getgCost() const {
-      return gCost;
-    }
-
+    void distance( const Position& pos );
       //  the heuristic cost, g(n) + f(n)
-    inline const int32 hCost() const {
-      int32 hCost = getfCost() + getgCost();
-      if (hCost < 0)
-        throw std::runtime_error("H Cost is negative!");
-      return hCost;
-    }
+    void numberOfWrongTokens();
+
+      //  a heuristic cost attribute, f(n)
+    inline int32 getfCost() const;
+      //  a heuristic cost attribute, g(n)
+    inline int32 getgCost() const;
+      //  the heuristic cost, g(n) + f(n)
+    inline int32 gethCost() const;
 
       // populates a vector<Board> with all possible neighbors of the board's current state
     void possibleStates(std::vector<Board>& states);
@@ -116,24 +59,29 @@ class Board {
       // overloaded output operator pru_int32s the board
     friend ostream& operator<<(ostream& os, const Board& b);
       // overloaded comparison operator returns if Board lhs is equal to Board rhs
-    friend bool operator==(const Board& lhs, const Board& rhs);
-
+    bool operator==(const Board& rhs);
+      // overloaded less than comparison operator returns if rhs is less than lhs
+    inline bool operator<(const Board& rhs) const;
+      // overloaded less than comparison operator returns if rhs is greater than lhs
+    bool operator>(const Board& rhs) const;
       // overloaded assignment operator copies one board to another
-    Board& operator=(const Board& rhs);
+    Board& operator=(Board rhs);
 
-    std::string chargrid;
     std::vector<char> board;
 
-    Board *parent_;
+    std::shared_ptr<Board> parent_;
+
   private:
+    void somethingBad();
+      // helper swap function
+    void swap(Board &copy);
       // returns the character at the position on the board
     char tokenForPosition(const Position& pos) const;
 
-      // A*
-    int32 fCost, gCost;
-
-    bool solutionFound;
+    int32 fCost;
+    int32 gCost;
     int32 size_;
+    bool solutionFound;
     Position emptySlotIndex;
 };
 

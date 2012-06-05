@@ -8,6 +8,7 @@
 #include "Hash.hpp"
 Hash<std::string> hash;
 
+#include "toString.hpp"
 #include "Board.hpp"
 
 TEST_GROUP(Board)
@@ -36,11 +37,11 @@ TEST_GROUP(Board)
   TEST(Board, TestGridPlacement)
   {
     char fxf[] = "RRR00RRR00RRSBB00BBB00BBB";
-    STRCMP_EQUAL( boardFiv->chargrid.c_str(), fxf );
+    STRCMP_EQUAL( boardToString(boardFiv->board).c_str(), fxf );
     char sxs[] = "RRRR000RRRR000RRRR000RRRSBBB000BBBB000BBBB000BBBB";
-    STRCMP_EQUAL( boardSev->chargrid.c_str(), sxs );
+    STRCMP_EQUAL( boardToString(boardSev->board).c_str(), sxs );
     char nxn[] = "RRRRR0000RRRRR0000RRRRR0000RRRRR0000RRRRSBBBB0000BBBBB0000BBBBB0000BBBBB0000BBBBB";
-    STRCMP_EQUAL( boardNin->chargrid.c_str(), nxn );
+    STRCMP_EQUAL( boardToString(boardNin->board).c_str(), nxn );
   }
 
   #pragma mark TestSwapShouldSwapTiles
@@ -57,8 +58,8 @@ TEST_GROUP(Board)
 
     Board afterSwap( boardFiv->swap( Position(bCol, bRow), Position(aCol, aRow) ) );
 
-    STRCMP_EQUAL( boardFiv->chargrid.c_str(), beforeGrid );
-    STRCMP_EQUAL( afterSwap.chargrid.c_str(), afterGrid );
+    STRCMP_EQUAL( boardToString(boardFiv->board).c_str(), beforeGrid );
+    STRCMP_EQUAL( boardToString(afterSwap.board).c_str(), afterGrid );
 
     CHECK_EQUAL( boardFiv->board[5*bCol+bRow], 'S' );
     CHECK_EQUAL( boardFiv->board[5*aCol+aRow], 'R' );
@@ -71,7 +72,7 @@ TEST_GROUP(Board)
   TEST(Board, TestNonReverseBoard)
   {
     Board b(5);
-    STRCMP_EQUAL( b.chargrid.c_str(), "RRR00RRR00RRSBB00BBB00BBB");
+    STRCMP_EQUAL( boardToString(b.board).c_str(), "RRR00RRR00RRSBB00BBB00BBB");
 
     char nonReversedGrid[5][5] = {
       {'R','R','R','0','0' },
@@ -93,7 +94,7 @@ TEST_GROUP(Board)
     Board b(5);
 
     b.reverse();
-    STRCMP_EQUAL( b.chargrid.c_str(), "BBB00BBB00BBSRR00RRR00RRR");
+    STRCMP_EQUAL( boardToString(b.board).c_str(), "BBB00BBB00BBSRR00RRR00RRR");
 
     char reversedGrid[5][5] = {
       {'B','B','B','0','0' },
@@ -115,7 +116,7 @@ TEST_GROUP(Board)
     Board fivBoardA(5);
     Board fivBoardB(5);
 
-    STRCMP_EQUAL( fivBoardA.chargrid.c_str(), fivBoardB.chargrid.c_str());
+    STRCMP_EQUAL( boardToString(fivBoardA.board).c_str(), boardToString(fivBoardB.board).c_str());
   }
 
   #pragma mark TestOverloadedOutputOperator
