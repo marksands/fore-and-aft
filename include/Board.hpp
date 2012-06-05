@@ -25,7 +25,7 @@ using std::endl;
   //------------------------------------------------------------------------------------
 class Board {
   public:
-    explicit Board(const int32 size = 5);
+    explicit Board(const size_t size = 5);
     Board(const Board& copy);
 
     virtual ~Board() { }
@@ -36,18 +36,18 @@ class Board {
     void reverse();
 
       // returns the size of the board
-    const int32 getSize() const;
+    const size_t getSize() const;
       // distance a tile is from the closest corner
     void distance( const Position& pos );
       //  the heuristic cost, g(n) + f(n)
     void numberOfWrongTokens();
 
       //  a heuristic cost attribute, f(n)
-    inline int32 getfCost() const;
+    inline size_t getfCost() const;
       //  a heuristic cost attribute, g(n)
-    inline int32 getgCost() const;
+    inline size_t getgCost() const;
       //  the heuristic cost, g(n) + f(n)
-    inline int32 gethCost() const;
+    inline size_t gethCost() const;
 
       // populates a vector<Board> with all possible neighbors of the board's current state
     void possibleStates(std::vector<Board>& states);
@@ -56,7 +56,7 @@ class Board {
       // validates the jump from Position pos to a given Cardinal Direction
     bool validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS direction);
 
-      // overloaded output operator pru_int32s the board
+      // overloaded output operator pru_size_ts the board
     friend ostream& operator<<(ostream& os, const Board& b);
       // overloaded comparison operator returns if Board lhs is equal to Board rhs
     bool operator==(const Board& rhs);
@@ -78,9 +78,9 @@ class Board {
       // returns the character at the position on the board
     char tokenForPosition(const Position& pos) const;
 
-    int32 fCost;
-    int32 gCost;
-    int32 size_;
+    size_t fCost;
+    size_t gCost;
+    size_t size_;
     bool solutionFound;
     Position emptySlotIndex;
 };

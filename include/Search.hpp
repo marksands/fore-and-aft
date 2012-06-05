@@ -45,7 +45,7 @@ void genericSearch(const Board& currentState, const Board& goalBoard )
   open.push(currentState);
   std::stack<Board> closed;
 
-  u_int32 expanded = 0;
+  size_t expanded = 0;
 
   while ( !open.empty() )
   {
@@ -64,7 +64,7 @@ void genericSearch(const Board& currentState, const Board& goalBoard )
     }
   }
 
-  u_int32 count = 0;
+  size_t count = 0;
   Board node = closed.top();
 
   while( node.parent_ != nullptr )

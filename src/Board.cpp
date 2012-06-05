@@ -15,14 +15,14 @@ extern Hash<std::string> hash;
 *   Author: Mark Sands
 *   Date modified: 2-3-11
 */
-Board::Board(const int32 size) : parent_(nullptr), fCost(999), gCost(999), size_(size), solutionFound(false)
+Board::Board(const size_t size) : parent_(nullptr), fCost(999), gCost(999), size_(size), solutionFound(false)
 {
   board.reserve(size*size);
 
-  int32 sized2 = size >> 1;
+  size_t sized2 = size >> 1;
 
-  for (int32 i = 0; i < size; ++i) {
-    for ( int32 j = 0; j < size; j++ )
+  for (size_t i = 0; i < size; ++i) {
+    for ( size_t j = 0; j < size; j++ )
     {
       if      ((i <= sized2) && (j <= sized2)) { board.push_back(RED);  }
       else if ((i >= sized2) && (j >= sized2)) { board.push_back(BLUE); }
@@ -96,7 +96,7 @@ void Board::possibleStates(std::vector<Board>& states)
 {
   states.clear();
 
-  int32 maxJumps = 4;
+  size_t maxJumps = 4;
 
     /** One Tile Moves **/
 
@@ -310,14 +310,14 @@ bool Board::validJumpToPosition(const Position& pos, CARDINAL_DIRECTIONS directi
 /*
 * @method
 *   ostream& operator<<(ostream& os, const Board& b)
-*     - overloaded output operator pru_int32s the board
+*     - overloaded output operator prints the board
 *   Author: Mark Sands
 *   Date modified: 1-25-11
 */
 ostream& operator<<(ostream& os, const Board& b)
 {
-  for ( int32 i = 0; i < b.size_; i++ ) {
-    for ( int32 j = 0; j < b.size_; j++ )
+  for ( size_t i = 0; i < b.size_; i++ ) {
+    for ( size_t j = 0; j < b.size_; j++ )
       os << "" << b.board[b.size_*i+j] << " ";
     os << "\n";
   }
@@ -337,7 +337,7 @@ bool Board::operator==(const Board& rhs)
 }
 
   // returns the size of the board
-const int32 Board::getSize() const
+const size_t Board::getSize() const
 {
   return size_;
 }
@@ -367,12 +367,12 @@ void Board::distance( const Position& pos )
 
 void Board::numberOfWrongTokens()
 {
-  int32 shouldHave = ( ((size_+1)/2) * ((size_+1)/2) ) - 1;
-  int32 doesHave = 0;
+  size_t shouldHave = ( ((size_+1)/2) * ((size_+1)/2) ) - 1;
+  size_t doesHave = 0;
 
     // search only half the board
-  for ( int32 i = 0; i < size_/2; i++ ){
-    for (int32 j = 0; j < size_/2; j++ ) {
+  for ( size_t i = 0; i < size_/2; i++ ){
+    for (size_t j = 0; j < size_/2; j++ ) {
        if ( board[size_*i+j] == BLUE )
          doesHave++;
     }
@@ -384,20 +384,20 @@ void Board::numberOfWrongTokens()
     throw std::runtime_error("G Cost is negative!");
 }
 
-int32 Board::getfCost() const
+size_t Board::getfCost() const
 {
   return fCost;
 }
 
-int32 Board::getgCost() const
+size_t Board::getgCost() const
 {
   return gCost;
 }
 
   //  the heuristic cost, g(n) + f(n)
-int32 Board::gethCost() const
+size_t Board::gethCost() const
 {
-  int32 hCost = getfCost() + getgCost();
+  size_t hCost = getfCost() + getgCost();
   if (!hCost || hCost < 0)
     return 0;//throw std::runtime_error("H Cost is negative!");
   return hCost;

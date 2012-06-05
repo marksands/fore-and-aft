@@ -4,9 +4,6 @@
 
 #include "Position.hpp"
 
-typedef unsigned long int u_int32;
-typedef long int int32;
-
   // Tokens
 const char EMPTY = '#';
 const char START = ' ';

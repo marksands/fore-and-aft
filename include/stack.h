@@ -2,13 +2,13 @@
 #include <cstdlib>
 #include <cassert>
 
-typedef unsigned long int u_int32;
+typedef unsigned long int size_t;
 
 typedef struct
 {
   void* elems;
-  u_int32 loglength;
-  u_int32 alloclength;
+  size_t loglength;
+  size_t alloclength;
   int elemSize;
 } stack;
 
