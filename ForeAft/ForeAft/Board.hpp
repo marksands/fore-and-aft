@@ -1,6 +1,4 @@
 #pragma once
-#ifndef BOARD_HPP
-#define BOARD_HPP
 
 #include <iostream>
 #include <iomanip>
@@ -8,10 +6,35 @@
 #include <vector>
 #include <stdexcept>
 #include <memory>
-
+#include <unordered_map>
 #include "Position.hpp"
-#include "Global.hpp"
-#include "MapHash.hpp"
+
+// Tokens
+const char EMPTY = '#';
+const char START = ' ';
+const char RED   = 'R';
+const char BLUE  = 'B';
+
+// Directions NORTH, EASH, SOUTH, and WEST
+enum CARDINAL_DIRECTIONS {
+    NORTH = 0, EAST, SOUTH, WEST
+};
+
+// clockwise NORTH -> EAST -> SOUTH -> WEST
+static const Position MOVES[] = {
+    Position(+0,-1),
+    Position(+1,+0),
+    Position(+0,+1),
+    Position(-1,+0)
+};
+
+// clockwise NORTH -> EAST -> SOUTH -> WEST
+static const Position JUMPS[] = {
+    Position(+0,-2),
+    Position(+2,+0),
+    Position(+0,+2),
+    Position(-2,+0)
+};
 
 using std::ostream;
 using std::setfill;
@@ -25,8 +48,11 @@ using std::endl;
   //------------------------------------------------------------------------------------
 class Board {
   public:
-    explicit Board(const size_t size = 5);
+    explicit Board(const int size = 5);
     Board(const Board& copy);
+    
+    std::unordered_map<size_t, std::string> hash;
+    std::hash<std::string> hash_function;
 
     virtual ~Board() { }
 
@@ -36,19 +62,21 @@ class Board {
     void reverse();
 
       // returns the size of the board
-    const size_t getSize() const;
+    const int getSize() const;
       // distance a tile is from the closest corner
     void distance( const Position& pos );
       //  the heuristic cost, g(n) + f(n)
     void numberOfWrongTokens();
 
       //  a heuristic cost attribute, f(n)
-    inline size_t getfCost() const;
+    inline int getfCost() const;
       //  a heuristic cost attribute, g(n)
-    inline size_t getgCost() const;
+    inline int getgCost() const;
       //  the heuristic cost, g(n) + f(n)
-    inline size_t gethCost() const;
+    inline int gethCost() const;
 
+      // helper function that adds a valid state to vector<Board> given the move and direction
+    bool addState(std::vector<Board>& states, const Position& move, CARDINAL_DIRECTIONS direction);
       // populates a vector<Board> with all possible neighbors of the board's current state
     void possibleStates(std::vector<Board>& states);
       // validates the move from Position pos to a given Cardinal Direction
@@ -78,11 +106,9 @@ class Board {
       // returns the character at the position on the board
     char tokenForPosition(const Position& pos) const;
 
-    size_t fCost;
-    size_t gCost;
-    size_t size_;
+    int fCost;
+    int gCost;
+    int size_;
     bool solutionFound;
     Position emptySlotIndex;
 };
-
-#endif

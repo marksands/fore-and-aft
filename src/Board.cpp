@@ -333,6 +333,8 @@ ostream& operator<<(ostream& os, const Board& b)
 */
 bool Board::operator==(const Board& rhs)
 {
+  // This doesn't work. I might need to rethink if hashing is working..
+  //return (boardToString(board) == boardToString(rhs.board));
   return hash.equalHash(boardToString(board), boardToString(rhs.board));
 }
 

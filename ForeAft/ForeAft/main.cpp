@@ -57,13 +57,11 @@
 #include <stack>
 #include <list>
 
-//#include "Hash.hpp"
-//Hash<std::string> hash;
+#include <boost/timer/timer.hpp>
 
-#include "MapHash.hpp"
-Hash<std::string> hash;
-
-#include "../include/ForeAft.hpp"
+#include "Board.hpp"
+#include "Position.hpp"
+#include "Search.hpp"
 
 using std::vector;
 using std::cin;
@@ -81,8 +79,7 @@ void BreadthFirstSearch( Board*& board );
 void HeuristicSearch( Board*& board );
 void QuitProgram( Board*& board );
 
-
-int main(int argc, char* argv[])
+int main()
 {
   try {
     int choice = 0;
@@ -95,7 +92,7 @@ int main(int argc, char* argv[])
     do {
       InitBoard( board );
       menuTable[ choice = Menu() ]( board );
-      hash.clear();
+      board->hash.clear();
     } while(choice != 4);
   }
   catch(std::exception &e) {
@@ -210,7 +207,7 @@ void InitBoard( Board*& board )
 */
 void DepthFirstSearch( Board*& board )
 {
-  Timer t;
+    boost::timer::auto_cpu_timer t;
   Board goalBoard(board->getSize()); goalBoard.reverse();
   dfs( *board, goalBoard );
   delete board;
@@ -225,7 +222,7 @@ void DepthFirstSearch( Board*& board )
 */
 void BreadthFirstSearch( Board*& board )
 {
-  Timer t;
+    boost::timer::auto_cpu_timer t;    
   Board goalBoard(board->getSize()); goalBoard.reverse();
   bfs( *board, goalBoard );
   delete board;
@@ -240,7 +237,7 @@ void BreadthFirstSearch( Board*& board )
 */
 void HeuristicSearch( Board*& board )
 {
-  Timer t;
+    boost::timer::auto_cpu_timer t;
   Board goalBoard(board->getSize()); goalBoard.reverse();
   heuristic( *board, goalBoard );
   delete board;
